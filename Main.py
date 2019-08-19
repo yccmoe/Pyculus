@@ -3,7 +3,7 @@ import asyncio
 import random
 import telepot
 import telepot.aio
-
+import time
 from telepot.aio.loop import MessageLoop
 from telepot.namedtuple import ReplyKeyboardMarkup, KeyboardButton, ReplyKeyboardRemove, ForceReply
 from telepot.namedtuple import InlineKeyboardMarkup, InlineKeyboardButton
@@ -47,14 +47,19 @@ async def on_chat_message(msg):
                 ])
                 await bot.sendMessage(chat_id, 'Custom keyboard with various buttons', reply_markup=markup)
 
+           
             if letter['chat'] == 'ㅎㅇ':
-                markup = ReplyKeyboardMarkup(keyboard=[
-                    [dict(text='Callback - show alert', callback_data='alert')],
-                    [dict(text='Phone', request_contact=True), KeyboardButton(text='Location', request_location=True)],
+                markup = InlineKeyboardMarkup(inline_keyboard=[
+                    [dict(text='AAAAA', callback_data='AA'),dict(text='BBBBB', callback_data='BB')],
+                    [dict(text='01', callback_data='001'),dict(text='02', callback_data='002'),dict(text='03', callback_data='003')],
+                    [dict(text='== EEEEE ==', callback_data='EE')],
                 ])
-                await bot.sendMessage(chat_id, 'Custom keyboard with various buttons', reply_markup=markup)
-            
-            
+
+                global message_with_inline_keyboard
+                message_with_inline_keyboard = await bot.sendMessage(chat_id, letter['name'][0]+'님 오늘도 멋져요!',
+                                                                     reply_markup=markup)
+                time.sleep(10)
+                await bot.editMessageText(message_with_inline_keyboard, '10초 지났습니다.')
             if letter['chat'] == 'i':
                 markup = InlineKeyboardMarkup(inline_keyboard=[
                     [dict(text='Telegram URL', url='https://core.telegram.org/')],
@@ -63,7 +68,6 @@ async def on_chat_message(msg):
                     [InlineKeyboardButton(text='Callback - edit message', callback_data='edit')],
                     [dict(text='Switch to using bot inline', switch_inline_query='initial query')],
                 ])
-
                 global message_with_inline_keyboard
                 message_with_inline_keyboard = await bot.sendMessage(chat_id, 'Inline keyboard with various buttons',
                                                                      reply_markup=markup)
@@ -109,7 +113,7 @@ async def on_chat_message(msg):
 async def on_callback_query(msg):
     query_id, from_id, data = telepot.glance(msg, flavor='callback_query')
     print('Callback query:', query_id, from_id, data)
-
+    print(msg)
     if data == 'notification':
         await bot.answerCallbackQuery(query_id, text='Notification at top of screen')
     elif data == 'alert':
@@ -122,6 +126,24 @@ async def on_callback_query(msg):
             await bot.editMessageText(msg_idf, 'NEW MESSAGE HERE!!!!!')
         else:
             await bot.answerCallbackQuery(query_id, text='No previous message to edit')
+
+    elif data == 'AA':
+        await bot.answerCallbackQuery(query_id, text='AA')
+    elif data == 'BB':
+        await bot.answerCallbackQuery(query_id, text='BB')
+    elif data == 'CC':
+        await bot.answerCallbackQuery(query_id, text='CC')
+    elif data == 'DD':
+        await bot.answerCallbackQuery(query_id, text='DD')
+    elif data == 'EE':
+        await bot.answerCallbackQuery(query_id, text=' * * Evil Empire * * \n용개형 보고있지?')
+    elif data == '001':
+        await bot.answerCallbackQuery(query_id, text='001', show_alert=True)
+    elif data == '002':
+        await bot.answerCallbackQuery(query_id, text='002', show_alert=True)
+    elif data == '003':
+        await bot.answerCallbackQuery(query_id, text='003', show_alert=True)
+   
 
 
 def on_inline_query(msg):
