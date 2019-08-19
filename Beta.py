@@ -9,12 +9,11 @@ from telepot.namedtuple import ReplyKeyboardMarkup, KeyboardButton, ReplyKeyboar
 from telepot.namedtuple import InlineKeyboardMarkup, InlineKeyboardButton
 from telepot.namedtuple import InlineQueryResultArticle, InlineQueryResultPhoto, InputTextMessageContent
 
-from lib_ import key_
-from lib_ import core
-from lib_ import cust
-from lib_ import magic
-from lib_ import board
 import re
+
+from lib_ import key_
+import b2ta
+
 
 message_with_inline_keyboard = None
 
@@ -32,68 +31,38 @@ async def on_chat_message(msg):
         letter['type'] = 'text'
         letter['chat'] = msg['text']
 
-        A = re.compile('^[0-9]+분 타이머$')
-        B = re.compile('^/pull +[0-9]+$')
 
+        if letter['chat'].find('불')==0:
+            await cust.smarthome(bot, letter)
 
-        if letter['chid'] == mew:
-            if letter['chat'].find('불')==0:
-                await cust.smarthome(bot, letter)
+        if letter['chat'] == 'c':
+            markup = ReplyKeyboardMarkup(keyboard=[
+                ['Plain text', KeyboardButton(text='Text only')],
+                [dict(text='Phone', request_contact=True), KeyboardButton(text='Location', request_location=True)],
+            ])
+            await bot.sendMessage(chat_id, 'Custom keyboard with various buttons', reply_markup=markup)
+        if letter['chat'] == 'i':
+            markup = InlineKeyboardMarkup(inline_keyboard=[
+                [dict(text='Telegram URL', url='https://core.telegram.org/')],
+                [InlineKeyboardButton(text='Callback - show notification', callback_data='notification')],
+                [dict(text='Callback - show alert', callback_data='alert')],
+                [InlineKeyboardButton(text='Callback - edit message', callback_data='edit')],
+                [dict(text='Switch to using bot inline', switch_inline_query='initial query')],
+            ])
 
-            if letter['chat'] == 'c':
-                markup = ReplyKeyboardMarkup(keyboard=[
-                    ['Plain text', KeyboardButton(text='Text only')],
-                    [dict(text='Phone', request_contact=True), KeyboardButton(text='Location', request_location=True)],
-                ])
-                await bot.sendMessage(chat_id, 'Custom keyboard with various buttons', reply_markup=markup)
-            if letter['chat'] == 'i':
-                markup = InlineKeyboardMarkup(inline_keyboard=[
-                    [dict(text='Telegram URL', url='https://core.telegram.org/')],
-                    [InlineKeyboardButton(text='Callback - show notification', callback_data='notification')],
-                    [dict(text='Callback - show alert', callback_data='alert')],
-                    [InlineKeyboardButton(text='Callback - edit message', callback_data='edit')],
-                    [dict(text='Switch to using bot inline', switch_inline_query='initial query')],
-                ])
-
-                global message_with_inline_keyboard
-                message_with_inline_keyboard = await bot.sendMessage(chat_id, 'Inline keyboard with various buttons',
-                                                                     reply_markup=markup)
-            if letter['chat'] == 'h':
-                markup = ReplyKeyboardRemove()
-                await bot.sendMessage(chat_id, 'Hide custom keyboard', reply_markup=markup)
-            if letter['chat'] == 'f':
-                markup = ForceReply()
-                await bot.sendMessage(chat_id, 'Force reply', reply_markup=markup)
+            global message_with_inline_keyboard
+            message_with_inline_keyboard = await bot.sendMessage(chat_id, 'Inline keyboard with various buttons',
+                                                                 reply_markup=markup)
+        if letter['chat'] == 'h':
+            markup = ReplyKeyboardRemove()
+            await bot.sendMessage(chat_id, 'Hide custom keyboard', reply_markup=markup)
+        if letter['chat'] == 'f':
+            markup = ForceReply()
+            await bot.sendMessage(chat_id, 'Force reply', reply_markup=markup)
 
 
         if letter['chat'] == '/ㅎㅇ':
-            await magic.ping(bot,letter, TOKEN)
-        elif letter['chat'] == '/하이':
-            await magic.ping_full(bot,letter, TOKEN)
-        elif letter['chat'] == '/채팅방':
-            await bot.sendMessage(chat_id, chat_id)
-        elif letter['chat'] == '/주사위':
-            await core.dice(bot, letter)
-        elif letter['chat'] == '/15':
-            await core.fif_gui(bot, letter)
-
-        elif A.match(letter['chat']):
-            await core.hglass(bot, letter)
-        elif B.match(letter['chat']):
-            await core.dbm_pull(bot, letter)
-        elif letter['chat'] == '>>' or letter['chat']=='»':
-            await core.papago_help(bot, letter, naver)
-        elif letter['chat'].find('>>') ==0 or letter['chat'].find('»') ==0 :
-            await core.papago(bot, letter, naver)
-        elif letter['chat'].find('=') ==0 :
-            await core.celc(bot, letter, UAkey)
-
-        elif letter['chat'].count('쐐기') == 1 and letter['chat'].count('뭐') == 1:
-            await core.keystone(bot, letter)
-
-
-        elif letter['chat'].find('$') ==0 :
-            await board.bbs(bot, letter, bbskey)
+            await bot.sendMessage(chat_id, '응답')
     return 'okay'
 
 
