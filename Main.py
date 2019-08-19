@@ -47,7 +47,7 @@ async def on_chat_message(msg):
                 ])
                 await bot.sendMessage(chat_id, 'Custom keyboard with various buttons', reply_markup=markup)
 
-            if letter['chat'] == 'ㅎㅇ'
+            if letter['chat'] == 'ㅎㅇ':
                 markup = ReplyKeyboardMarkup(keyboard=[
                     [dict(text='Callback - show alert', callback_data='alert')],
                     [dict(text='Phone', request_contact=True), KeyboardButton(text='Location', request_location=True)],
