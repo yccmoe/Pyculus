@@ -27,7 +27,7 @@ async def on_chat_message(msg):
     if content_type != 'text':
         return
     elif content_type == 'text':
-        letter['name'] = msg['from']['first_name'][0],
+        letter['name'] = msg['from']['first_name']
         letter['chid'] = chat_id
         letter['type'] = 'text'
         letter['chat'] = msg['text']
