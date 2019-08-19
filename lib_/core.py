@@ -257,7 +257,7 @@ async def papago_help(bot, letter, naver):
     return 'okay'
 
 async def dice(bot, letter):
-    name, chid, chat = letter['name'], letter['chid'], letter['chat']
+    name, chid, chat = str(letter['name']), str(letter['chid']), str(letter['chat'])
     res=random.randint(1,100)
     fog=random.randint(1,20)
     sticker_head='/home/yamcc/Pyculus/img_/DICE/n_'
@@ -266,11 +266,11 @@ async def dice(bot, letter):
         ress=res*2
         say =name+'님이 주사위를 굴려 나온 '+ str(res)+be(res)+' 더블!!!! \n'+str(ress) + be(ress)+' 나왔습니다!!'
         sticker = str(res)+'x'
-    elif fog == 3 or fog == 5:
+    elif fog == 3 or fog == 4:
         ress = res+10
         say =name+'님이 전쟁벼림 주사위를 굴려 '+str(ress)+be(ress)+' 나왔습니다!'
         sticker = str(ress)+'+'
-    elif fog == 4 :
+    elif fog == 5 :
         ress = res +15
         say =name+'님이 티탄벼림 주사위를 굴려 '+str(ress)+be(ress)+' 나왔습니다!!'
         sticker = str(ress)+'++'
