@@ -12,10 +12,11 @@ from telepot.namedtuple import InlineQueryResultArticle, InlineQueryResultPhoto,
 import re
 
 from lib_ import key_
-import b2ta
+from lib_ import b2ta
 
 
 message_with_inline_keyboard = None
+brain=''
 
 
 async def on_chat_message(msg):
@@ -41,18 +42,34 @@ async def on_chat_message(msg):
                 [dict(text='Phone', request_contact=True), KeyboardButton(text='Location', request_location=True)],
             ])
             await bot.sendMessage(chat_id, 'Custom keyboard with various buttons', reply_markup=markup)
-        if letter['chat'] == 'i':
-            markup = InlineKeyboardMarkup(inline_keyboard=[
-                [dict(text='Telegram URL', url='https://core.telegram.org/')],
-                [InlineKeyboardButton(text='Callback - show notification', callback_data='notification')],
-                [dict(text='Callback - show alert', callback_data='alert')],
-                [InlineKeyboardButton(text='Callback - edit message', callback_data='edit')],
-                [dict(text='Switch to using bot inline', switch_inline_query='initial query')],
-            ])
 
+        if letter['chat'] == 'ee' or letter['chat']=='i':
             global message_with_inline_keyboard
-            message_with_inline_keyboard = await bot.sendMessage(chat_id, 'Inline keyboard with various buttons',
-                                                                 reply_markup=markup)
+            global brain
+            brain=''
+            if letter['chat']=='ee':
+                markup = InlineKeyboardMarkup(inline_keyboard=[
+                    [dict(text='aaa', callback_data='aaa'),dict(text='bbb', callback_data='bbb')],
+                    [dict(text='ccc', callback_data='ccc'),dict(text='ddd', callback_data='ddd')],
+                ])
+
+                message_with_inline_keyboard = await bot.sendMessage(chat_id, 'ee',
+                                                                     reply_markup=markup)
+                                                                     
+                                                                     
+                                                                 
+            if letter['chat'] == 'i':
+                markup = InlineKeyboardMarkup(inline_keyboard=[
+                    [dict(text='Telegram URL', url='https://core.telegram.org/')],
+                    [InlineKeyboardButton(text='Callback - show notification', callback_data='notification')],
+                    [dict(text='Callback - show alert', callback_data='alert')],
+                    [InlineKeyboardButton(text='Callback - edit message', callback_data='edit')],
+                    [dict(text='Switch to using bot inline', switch_inline_query='initial query')],
+                ])
+
+                
+                message_with_inline_keyboard = await bot.sendMessage(chat_id, 'Inline keyboard with various buttons',
+                                                                     reply_markup=markup)                                                                 
         if letter['chat'] == 'h':
             markup = ReplyKeyboardRemove()
             await bot.sendMessage(chat_id, 'Hide custom keyboard', reply_markup=markup)
@@ -62,14 +79,15 @@ async def on_chat_message(msg):
 
 
         if letter['chat'] == '/ㅎㅇ':
-            await bot.sendMessage(chat_id, '응답')
+            await bot.sendMessage(chat_id, 'Res...')
     return 'okay'
 
 
 async def on_callback_query(msg):
     query_id, from_id, data = telepot.glance(msg, flavor='callback_query')
     print('Callback query:', query_id, from_id, data)
-
+    print(msg)
+    global brain
     if data == 'notification':
         await bot.answerCallbackQuery(query_id, text='Notification at top of screen')
     elif data == 'alert':
@@ -82,7 +100,38 @@ async def on_callback_query(msg):
             await bot.editMessageText(msg_idf, 'NEW MESSAGE HERE!!!!!')
         else:
             await bot.answerCallbackQuery(query_id, text='No previous message to edit')
-
+    elif data=='aaa':
+        brain = brain+'aaa'
+        markup = InlineKeyboardMarkup(inline_keyboard=[
+                    [dict(text='aaa', callback_data='aaa'),dict(text='bbb', callback_data='bbb')],
+                    [dict(text='ccc', callback_data='ccc'),dict(text='ddd', callback_data='ddd')],
+                ])
+        msg_idf = telepot.message_identifier(message_with_inline_keyboard)
+        await bot.editMessageText(msg_idf, brain, reply_markup=markup)
+    elif data=='bbb':
+        brain = brain+'bbb'
+        markup = InlineKeyboardMarkup(inline_keyboard=[
+                    [dict(text='aaa', callback_data='aaa'),dict(text='bbb', callback_data='bbb')],
+                    [dict(text='ccc', callback_data='ccc'),dict(text='ddd', callback_data='ddd')],
+                ])
+        msg_idf = telepot.message_identifier(message_with_inline_keyboard)
+        await bot.editMessageText(msg_idf, brain, reply_markup=markup)        
+    elif data=='ccc':
+        brain = brain+'ccc'
+        markup = InlineKeyboardMarkup(inline_keyboard=[
+                    [dict(text='aaa', callback_data='aaa'),dict(text='bbb', callback_data='bbb')],
+                    [dict(text='ccc', callback_data='ccc'),dict(text='ddd', callback_data='ddd')],
+                ])
+        msg_idf = telepot.message_identifier(message_with_inline_keyboard)
+        await bot.editMessageText(msg_idf, brain, reply_markup=markup)
+    elif data=='ddd':
+        brain = brain+'ddd'
+        markup = InlineKeyboardMarkup(inline_keyboard=[
+                    [dict(text='aaa', callback_data='aaa'),dict(text='bbb', callback_data='bbb')],
+                    [dict(text='ccc', callback_data='ccc'),dict(text='ddd', callback_data='ddd')],
+                ])
+        msg_idf = telepot.message_identifier(message_with_inline_keyboard)
+        await bot.editMessageText(msg_idf, brain, reply_markup=markup)                
 
 def on_inline_query(msg):
     def compute():
@@ -128,16 +177,7 @@ def message_thinking(chat):
 
 TOKEN = key_.kids('beta')
 
-UAkey = key_.kids('UAkey')
-naver = key_.kids('naver')
-phgs = key_.kids('phgs')
-bbskey = key_.kids('bbs')
 bot = telepot.aio.Bot(TOKEN)
-
-me=key_.adds ('me')
-mew=key_.adds ('mew')
-ph=key_.adds ('pharmacy')
-
 
 
 answerer = telepot.aio.helper.Answerer(bot)
