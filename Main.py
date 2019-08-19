@@ -48,18 +48,6 @@ async def on_chat_message(msg):
                 await bot.sendMessage(chat_id, 'Custom keyboard with various buttons', reply_markup=markup)
 
            
-            if letter['chat'] == 'ㅎㅇ':
-                markup = InlineKeyboardMarkup(inline_keyboard=[
-                    [dict(text='AAAAA', callback_data='AA'),dict(text='BBBBB', callback_data='BB')],
-                    [dict(text='01', callback_data='001'),dict(text='02', callback_data='002'),dict(text='03', callback_data='003')],
-                    [dict(text='== EEEEE ==', callback_data='EE')],
-                ])
-
-                global message_with_inline_keyboard
-                message_with_inline_keyboard = await bot.sendMessage(chat_id, letter['name'][0]+'님 오늘도 멋져요!',
-                                                                     reply_markup=markup)
-                time.sleep(10)
-                await bot.editMessageText(message_with_inline_keyboard, '10초 지났습니다.')
             if letter['chat'] == 'i':
                 markup = InlineKeyboardMarkup(inline_keyboard=[
                     [dict(text='Telegram URL', url='https://core.telegram.org/')],
@@ -68,6 +56,7 @@ async def on_chat_message(msg):
                     [InlineKeyboardButton(text='Callback - edit message', callback_data='edit')],
                     [dict(text='Switch to using bot inline', switch_inline_query='initial query')],
                 ])
+                
                 global message_with_inline_keyboard
                 message_with_inline_keyboard = await bot.sendMessage(chat_id, 'Inline keyboard with various buttons',
                                                                      reply_markup=markup)
