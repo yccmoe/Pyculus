@@ -257,7 +257,7 @@ async def papago_help(bot, letter, naver):
     return 'okay'
 
 async def dice(bot, letter):
-    name, chid, chat = str(letter['name']), str(letter['chid']), str(letter['chat'])
+    name, chid, chat = letter['name'], letter['chid'], letter['chat']
     res=random.randint(1,100)
     fog=random.randint(1,20)
     sticker_head='/home/yamcc/Pyculus/img_/DICE/n_'
