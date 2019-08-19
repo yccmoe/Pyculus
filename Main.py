@@ -46,6 +46,15 @@ async def on_chat_message(msg):
                     [dict(text='Phone', request_contact=True), KeyboardButton(text='Location', request_location=True)],
                 ])
                 await bot.sendMessage(chat_id, 'Custom keyboard with various buttons', reply_markup=markup)
+
+            if letter['chat'] == 'ㅎㅇ'
+                markup = ReplyKeyboardMarkup(keyboard=[
+                    [dict(text='Callback - show alert', callback_data='alert')],
+                    [dict(text='Phone', request_contact=True), KeyboardButton(text='Location', request_location=True)],
+                ])
+                await bot.sendMessage(chat_id, 'Custom keyboard with various buttons', reply_markup=markup)
+            
+            
             if letter['chat'] == 'i':
                 markup = InlineKeyboardMarkup(inline_keyboard=[
                     [dict(text='Telegram URL', url='https://core.telegram.org/')],
