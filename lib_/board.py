@@ -56,7 +56,7 @@ def ago(time):
 
 
 async def bbs(chat, key):
-
+    name, chid, chat = letter['name'],letter['chid'],letter['chat']
     hst, usr, pss, dbb  = key['host'], key['user'], key['pass'], key['db']
     re_help=re.compile('^\${2}$')
     re_show=re.compile('^\${1}$')
@@ -83,7 +83,7 @@ async def bbs(chat, key):
                 if rs[i][1]=='c': tale='-닫힘'
                 else:tale=''
                 res=res+'#'+str(i+1)+' '+rs[i][0]+tale+'\n'
-                res=res+[dict(text='#'+str(i+1)+' '+rs[i][0]+tale,  callback_data='bbs♡open♡'+str(i+1))]
+                res=res+[dict(text='#'+str(i+1)+' '+rs[i][0]+tale,  callback_data='bbs♡open♡$'+str(i+1))]
         conn.close()
         print(res)
         markup = InlineKeyboardMarkup(inline_keyboard=[ [i] for i in res])
@@ -118,12 +118,12 @@ async def bbs(chat, key):
                     sql = "INSERT INTO bbs (chat_id, user, title, text, time) VALUES (%s, %s, %s, %s, %s)"
                     cursor.execute(sql,(chid, name, new_title, text+' - 수정', epoch()))
                     conn.commit()
-                    return 'okay'
+                    return 'okay', markup
                 else:
-                    return '잠긴 글 입니다.\n$$:도움말 출력'
+                    return '잠긴 글 입니다.\n$$:도움말 출력', markup
             conn.close()
         except:
-            return '#'+str(q)+' 게시물이 없습니다.'
+            return '#'+str(q)+' 게시물이 없습니다.', markup
     elif re_close.match(chat):
         print('close')
         qs = re.findall('^\$[0-9]',chat)
@@ -148,12 +148,12 @@ async def bbs(chat, key):
                     sql = "INSERT INTO bbs (chat_id, user, title, text, time, status) VALUES (%s, %s, %s, %s, %s, %s)"
                     cursor.execute(sql,(chid, name, title, title+' - 닫음', epoch(), 'c'))
                     conn.commit()
-                    return 'okay'
+                    return 'okay', markup
                 else:
-                    return '잠긴 글 입니다.\n$$:도움말 출력'
+                    return '잠긴 글 입니다.\n$$:도움말 출력', markup
             conn.close()
         except:
-            return '#'+str(q)+' 게시물이 없습니다.'
+            return '#'+str(q)+' 게시물이 없습니다.', markup
     elif re_open.match(chat):
         print('reopen')
         qs = re.findall('^\$[0-9]',chat)
@@ -178,12 +178,12 @@ async def bbs(chat, key):
                     sql = "INSERT INTO bbs (chat_id, user, title, text, time) VALUES (%s, %s, %s, %s, %s)"
                     cursor.execute(sql,(chid, name, title, title+' - 다시 열음', epoch()))
                     conn.commit()
-                    await bot.sendMessage(chid, 'okay')
+                    return 'okay', markup
                 else:
-                    await bot.sendMessage(chid, '이미 열려 있습니다.\n$$:도움말 출력')
+                    return '이미 열려 있습니다.\n$$:도움말 출력', markup
             conn.close()
         except:
-            await bot.sendMessage(chid, '#'+str(q)+' 게시물이 없습니다.')
+            return '#'+str(q)+' 게시물이 없습니다.', markup
     elif re_comment.match(chat):
         print('comment')
         qs = re.findall('^\$[0-9]',chat)
@@ -204,15 +204,16 @@ async def bbs(chat, key):
                     sql = "INSERT INTO bbs (chat_id, user, title, text, time) VALUES (%s, %s, %s, %s, %s)"
                     cursor.execute(sql,(chid, name, title, text, epoch()))
                     conn.commit()
-                    return 'okay'
+                    return 'okay', markup
                 else:
-                    return '잠긴 글 입니다.\n$$:도움말 출력'
+                    return '잠긴 글 입니다.\n$$:도움말 출력', markup
             conn.close()
         except:
-            return '#'+str(q)+' 게시물이 없습니다.'
+            return '#'+str(q)+' 게시물이 없습니다.', markup
     elif re_read.match(chat) or chat.find('CallbackOpen')==0:
-        q = int(chat.replace('$',''))
-        q = int(q.replace('CallbackOpen',''))
+        q = chat.replace('$','')
+        q = q.replace('CallbackOpen','')
+        q= int(q)
         try:
             print('read: '+str(q))
             with conn.cursor() as cursor:
@@ -229,9 +230,9 @@ async def bbs(chat, key):
                     else:tale=''
                     res=res+'#'+str(i+1)+' '+rs[i][2]+'\n'+ago(rs[i][1])+', '+rs[i][0]+'\n\n'
             conn.close()
-            return res
+            return res, markup
         except:
-            return '#'+str(q)+' 게시물이 없습니다.'
+            return '#'+str(q)+' 게시물이 없습니다.', markup
     elif re_new.match(chat):
         print ('new: '+chat)
         with conn.cursor() as cursor:
@@ -241,10 +242,10 @@ async def bbs(chat, key):
             cursor.execute(sql,(chid, name, title, text, epoch()))
             conn.commit()
         conn.close()
-        return title+': okay'
+        return title+': okay', markup
     else:
-        return '$$ 로 도움말 보기'
-    return 'okay!'
+        return '$$ 로 도움말 보기', markup
+    return 'okay!', markup
 
 
 
