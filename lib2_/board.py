@@ -85,6 +85,7 @@ async def bbs(chat, key):
                     res=res+'#'+str(i+1)+' '+rs[i][0]+tale+'\n'
                     res=res+[dict(text='#'+str(i+1)+' '+rs[i][0]+tale,  callback_data='bbs♡open♡'+str(i+1))]
             conn.close()
+                print(res)
             markup = InlineKeyboardMarkup(inline_keyboard=[ [i] for i in res])
             res = '글 목록.'
         except:
@@ -211,7 +212,7 @@ async def bbs(chat, key):
             return '#'+str(q)+' 게시물이 없습니다.'
     elif re_read.match(chat) or chat.find('CallbackOpen')==0:
         q = int(chat.replace('$',''))
-        q = int(chat.replace('CallbackOpen',''))
+        q = int(q.replace('CallbackOpen',''))
         try:
             print('read: '+str(q))
             with conn.cursor() as cursor:

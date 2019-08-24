@@ -68,12 +68,15 @@ class Emperor(telepot.aio.helper.ChatHandler, Global):
             t,s,r =await core.dice(name)
             await self.sender.sendMessage(t)
             await self.sender.sendSticker(open(s),'rb')
+            print(s)
             if r>100 : await self.sender.sendMessage('미터기 터져요!!!!!!')
         if chat =='/15': await self.sender.sendMessage(await core.fif_gui(), reply_markup = InlineKeyboardMarkup(inline_keyboard=[[dict(text='불만 있어요?', callback_data='fif_gui')],]))
         if chat.count('ㅋ')>5: await self.sender.sendMessage(core.funnybell(bot,letter))
         if chat.find('=') == 0 : await self.sender.sendMessage(await core.celc(chat, UAkey), parse_mode='HTML')
         if chat.find('>') == 0 or chat.find('»') == 0  : await self.sender.sendMessage(await core.papago(chat, naver))
-        if chat.find('$') == 0 : await self.sender.sendMessage(await board.bbs(chat,bbskey))
+        if chat.find('$') == 0 : 
+            a,b=await board.bbs(chat,bbskey)
+            await self.sender.sendMessage(a,reply_markup=b)
         ## $, >, =, /주사위, /15, 고독한공부방이라던가,,,,,,
         if chat == '뭐먹지?' or chat == '모먹지?': 
             Global.Timeout= None
