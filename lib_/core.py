@@ -252,7 +252,8 @@ async def papago(chat, naver):
     return 'okay'
         ## >>text en to kr 이런식으로 작동...
 
-async def dice(name):
+async def dice(bot, letter):
+    name, chid, chat = letter['name'], letter['chid'], letter['chat']
     res=random.randint(1,100)
     fog=random.randint(1,20)
     sticker_head='/home/yamcc/Pyculus/img_/DICE/n_'
@@ -273,7 +274,8 @@ async def dice(name):
         ress = res
         say =name+'님이 주사위를 굴려 '+str(ress)+be(ress)+' 나왔습니다.'
         sticker = str(res)
-    return say, sticker_head+sticker+sticker_tale, ress 
+    await bot.sendMessage(chid, say)
+    await bot.sendSticker(chid, open(sticker_head+sticker+sticker_tale,'rb'))
     if ress>100 :
         await bot.sendMessage(chid, '미터기 터져요!!!')
     return 'okay'
