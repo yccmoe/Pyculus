@@ -73,24 +73,24 @@ async def bbs(chat, key):
         return help
     elif re_show.match(chat):
         print('show')
-        try:
-            with conn.cursor() as cursor:
-                sql = 'select distinct title, status from bbs where chat_id='+str(chid)+ ';'
-                cursor.execute(sql)
-                rs = cursor.fetchall()
-                res=[]
-                for i in (range(len(rs))):
-                    if rs[i][1]=='c': tale='-닫힘'
-                    else:tale=''
-                    res=res+'#'+str(i+1)+' '+rs[i][0]+tale+'\n'
-                    res=res+[dict(text='#'+str(i+1)+' '+rs[i][0]+tale,  callback_data='bbs♡open♡'+str(i+1))]
-            conn.close()
-                print(res)
-            markup = InlineKeyboardMarkup(inline_keyboard=[ [i] for i in res])
-            res = '글 목록.'
-        except:
-            markup=None
-            res='새 글을 작성해 보세요.'
+    
+        with conn.cursor() as cursor:
+            sql = 'select distinct title, status from bbs where chat_id='+str(chid)+ ';'
+            cursor.execute(sql)
+            rs = cursor.fetchall()
+            res=[]
+            for i in (range(len(rs))):
+                if rs[i][1]=='c': tale='-닫힘'
+                else:tale=''
+                res=res+'#'+str(i+1)+' '+rs[i][0]+tale+'\n'
+                res=res+[dict(text='#'+str(i+1)+' '+rs[i][0]+tale,  callback_data='bbs♡open♡'+str(i+1))]
+        conn.close()
+            print(res)
+        markup = InlineKeyboardMarkup(inline_keyboard=[ [i] for i in res])
+        res = '글 목록.'
+#    except:
+ #           markup=None
+  #          res='새 글을 작성해 보세요.'
         return res, markup
     elif re_rename.match(chat):
         print('rename')

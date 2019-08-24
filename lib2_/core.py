@@ -1,5 +1,6 @@
 #-*- coding:utf-8 -*-
 import os
+import io
 import sys
 import asyncio
 import telepot
@@ -11,12 +12,12 @@ from sympy import sympify
 import wolframalpha
 import urllib3
 import urllib.request
-import os
 import json
 from telepot.namedtuple import InlineKeyboardMarkup, InlineKeyboardButton
 message_with_inline_keyboard = None
 import time
-
+sys.stdout = io.TextIOWrapper(sys.stdout.detach(), encoding = 'utf-8')
+sys.stderr = io.TextIOWrapper(sys.stderr.detach(), encoding = 'utf-8')
 if __name__ == '__main__':
     print('이 모듈을 직접 실행하셨군요.')
 
