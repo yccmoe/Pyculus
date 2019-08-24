@@ -70,7 +70,7 @@ async def bbs(letter, key):
     conn = pymysql.connect(host=hst, user=usr, password=pss, db=dbb, charset='utf8' )
     markup=None
     if re_help.match(chat):
-        return help
+        return help,markup
     elif re_show.match(chat):
         print('show')
     
