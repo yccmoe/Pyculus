@@ -22,11 +22,10 @@ help='''메모장 - 겸 Issue Tracker
 $$ : 도움말
 $ : 글 목록 보기
 $ <--새 글--> : 새 글 작성
-$1 : 1번 글 보기
-$2 <--새 댓글--> : 새 댓글 달기
-$3 <--변경할 제목--> $수정$ : 제목 변경
-$4 $닫기$ : 4번 글 닫기 (더이상 댓글 달 수 없음)
-$5 $열기$ : 5번 글 다시 열기.
+$1 <--새 댓글--> : 새 댓글 달기
+$2 <--변경할 제목--> $수정$ : 제목 변경
+$3 $닫기$ : 4번 글 닫기 (더이상 댓글 달 수 없음)
+$4 $열기$ : 5번 글 다시 열기.
 '''
 
 
@@ -52,12 +51,12 @@ def ago(time):
     elif e < 86400:
         return str(n.strftime('%H'))+' 시간 전'
     else:
-        return str(n.strftime('%Y-%m-%d'))
+        return str(n.strftime('%d'))+' 일 전'
 
 
 
-async def bbs(bot, letter, key):
-    name, chid, chat = letter['name'], letter['chid'], letter['chat']
+async def bbs(chat, key):
+
     hst, usr, pss, dbb  = key['host'], key['user'], key['pass'], key['db']
     re_help=re.compile('^\${2}$')
     re_show=re.compile('^\${1}$')
@@ -69,22 +68,30 @@ async def bbs(bot, letter, key):
     re_new=re.compile('^\${1}\s.*$')
 
     conn = pymysql.connect(host=hst, user=usr, password=pss, db=dbb, charset='utf8' )
-
+    markup=None
     if re_help.match(chat):
-        await bot.sendMessage(chid, help)
+        return help
     elif re_show.match(chat):
         print('show')
+    
         with conn.cursor() as cursor:
             sql = 'select distinct title, status from bbs where chat_id='+str(chid)+ ';'
             cursor.execute(sql)
             rs = cursor.fetchall()
-            res=''
+            res=[]
             for i in (range(len(rs))):
                 if rs[i][1]=='c': tale='-닫힘'
                 else:tale=''
                 res=res+'#'+str(i+1)+' '+rs[i][0]+tale+'\n'
+                res=res+[dict(text='#'+str(i+1)+' '+rs[i][0]+tale,  callback_data='bbs♡open♡'+str(i+1))]
         conn.close()
-        await bot.sendMessage(chid, res)
+            print(res)
+        markup = InlineKeyboardMarkup(inline_keyboard=[ [i] for i in res])
+        res = '글 목록.'
+#    except:
+ #           markup=None
+  #          res='새 글을 작성해 보세요.'
+        return res, markup
     elif re_rename.match(chat):
         print('rename')
         qs = re.findall('^\$[0-9]',chat)
@@ -111,12 +118,12 @@ async def bbs(bot, letter, key):
                     sql = "INSERT INTO bbs (chat_id, user, title, text, time) VALUES (%s, %s, %s, %s, %s)"
                     cursor.execute(sql,(chid, name, new_title, text+' - 수정', epoch()))
                     conn.commit()
-                    await bot.sendMessage(chid, 'okay')
+                    return 'okay'
                 else:
-                    await bot.sendMessage(chid, '잠긴 글 입니다.\n$$:도움말 출력')
+                    return '잠긴 글 입니다.\n$$:도움말 출력'
             conn.close()
         except:
-            await bot.sendMessage(chid,'#'+str(q)+' 게시물이 없습니다.')
+            return '#'+str(q)+' 게시물이 없습니다.'
     elif re_close.match(chat):
         print('close')
         qs = re.findall('^\$[0-9]',chat)
@@ -141,12 +148,12 @@ async def bbs(bot, letter, key):
                     sql = "INSERT INTO bbs (chat_id, user, title, text, time, status) VALUES (%s, %s, %s, %s, %s, %s)"
                     cursor.execute(sql,(chid, name, title, title+' - 닫음', epoch(), 'c'))
                     conn.commit()
-                    await bot.sendMessage(chid, 'okay')
+                    return 'okay'
                 else:
-                    await bot.sendMessage(chid, '잠긴 글 입니다.\n$$:도움말 출력')
+                    return '잠긴 글 입니다.\n$$:도움말 출력'
             conn.close()
         except:
-            await bot.sendMessage(chid,'#'+str(q)+' 게시물이 없습니다.')
+            return '#'+str(q)+' 게시물이 없습니다.'
     elif re_open.match(chat):
         print('reopen')
         qs = re.findall('^\$[0-9]',chat)
@@ -197,14 +204,15 @@ async def bbs(bot, letter, key):
                     sql = "INSERT INTO bbs (chat_id, user, title, text, time) VALUES (%s, %s, %s, %s, %s)"
                     cursor.execute(sql,(chid, name, title, text, epoch()))
                     conn.commit()
-                    await bot.sendMessage(chid, 'okay')
+                    return 'okay'
                 else:
-                    await bot.sendMessage(chid,'잠긴 글 입니다.\n$$:도움말 출력')
+                    return '잠긴 글 입니다.\n$$:도움말 출력'
             conn.close()
         except:
-            await bot.sendMessage(chid, '#'+str(q)+' 게시물이 없습니다.')
-    elif re_read.match(chat):
+            return '#'+str(q)+' 게시물이 없습니다.'
+    elif re_read.match(chat) or chat.find('CallbackOpen')==0:
         q = int(chat.replace('$',''))
+        q = int(q.replace('CallbackOpen',''))
         try:
             print('read: '+str(q))
             with conn.cursor() as cursor:
@@ -221,9 +229,9 @@ async def bbs(bot, letter, key):
                     else:tale=''
                     res=res+'#'+str(i+1)+' '+rs[i][2]+'\n'+ago(rs[i][1])+', '+rs[i][0]+'\n\n'
             conn.close()
-            await bot.sendMessage(chid, res)
+            return res
         except:
-            await bot.sendMessage(chid, '#'+str(q)+' 게시물이 없습니다.')
+            return '#'+str(q)+' 게시물이 없습니다.'
     elif re_new.match(chat):
         print ('new: '+chat)
         with conn.cursor() as cursor:
@@ -233,9 +241,9 @@ async def bbs(bot, letter, key):
             cursor.execute(sql,(chid, name, title, text, epoch()))
             conn.commit()
         conn.close()
-        await bot.sendMessage(chid, title+': okay')
+        return title+': okay'
     else:
-        await bot.sendMessage(chid, '$$ 로 도움말 보기')
+        return '$$ 로 도움말 보기'
     return 'okay!'
 
 

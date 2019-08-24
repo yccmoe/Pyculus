@@ -1,76 +1,76 @@
-
 from telepot.namedtuple import InlineKeyboardMarkup, InlineKeyboardButton
-import telepot
-import time
+import random
+okay='okay'
 
-
-
-async def start(bot, letter):
-    name, chid, chat = letter['name'], letter['chid'], letter['chat']
-    letter['intent']='menupann.Start'
-    cat='force'
-    hash = hsh(letter,cat)
-    data = ''
-    keyboard=InlineKeyboardMarkup(inline_keyboard=[
-    [{'text': '빠른 올랜덤', 'callback_data': 'menupann.QuickAll'}], 
-    [{'text': '태그 선택', 'callback_data': 'menupann.Go2Allow'},{'text': '종료', 'callback_data': 'menupann.Exit'}]
-    ])
-    message_with_inline_keyboard = await bot.sendMessage(chid, '몬가 먹을게 애매한 분위기군요..', reply_markup=keyboard)
-    return message_with_inline_keyboard, hash, data
-
-####여기서부터 콜백으로만 작동####
-async def QuickAll(bot, letter, msg_idf):
-    name, chid, chat = letter['name'], letter['chid'], letter['chat']
-    letter['intent']='menupann.QuickAll'
-    cat='force'
-    AD='Allow'
-    hash = hsh(letter,cat)
-    #### 대충 올랜덤 돌려서 결과 나옴 ####
-    message_with_inline_keyboard = await bot.editMessageText(mag_idf, '대충 올랜덤')
-    return message_with_inline_keyboard, 'okay', 'okay'
-    
-    
-async def Allow(bot, letter, msg_idf):
-    name, chid, chat = letter['name'], letter['chid'], letter['chat']
-    letter['intent']='AddAllow'
-    cat='force'
-    AD='Allow'
-    hash = hsh(letter,cat)
-    message_with_inline_keyboard = await bot.editMessageText(mag_idf, '몬가 먹을게 애매한 분위기군요..\n포함할 태그를 추가합니다.', reply_markup=MarkupCreate(chid,AD))
-    return message_with_inline_keyboard    
-
-async def Exit(bot, letter, msg_idf):
-    name, chid, chat = letter['name'], letter['chid'], letter['chat']
-    letter['intent']='exit'
-    cat='force'
-    AD='Allow'
-    hash = hsh(letter,cat)
-    message_with_inline_keyboard = await bot.editMessageText(mag_idf, '펑')
-    return message_with_inline_keyboard    
-
-
-####바퀴와 불꽃####
-def tags(chid):
-    ###대충 SQL 돌리는 내용###
-    return ['a','b','c','d','EE']
-    
-def MarkupCreate(chid,AD):
-    tag = tags(chid)
+def start():
     res=[]
-    res=res+[dict(text='올랜덤', callback_data=AD+'All')]
+    res=res+[dict(text= '빠른 올랜덤', callback_data= 'menupann♡Run')]
+    res=res+[dict(text= '태그 선택', callback_data= 'menupann♡allowTag'),dict(text= '종료', callback_data= 'menupann♡Exit')]
     
-    for i in range(len(tag)):
-        res=res+[dict(text=tag[i], callback_data=AD+tag[i])]
+    keyboard=InlineKeyboardMarkup(inline_keyboard=[ [i] for i in res ] )
+    print([i]+[i+1]for i in res)
+    return keyboard
+    
+def MarkupCreate(tag, AD):
+    res=[]
+    lastwill=''
+    if AD=='first_allow':
+        AD='allow'
+        res=res+[dict(text='올랜덤', callback_data='menupann♡'+AD+'♡All')]    
+    elif AD=='allow': 
+        lastwill='pass'  
+    if AD != 'show':
+        for i in range(len(tag)):
+            res=res+[dict(text=tag[i], callback_data='menupann♡'+AD+'Tag♡'+tag[i])]
+    else: res = res+[dict(text='메뉴판 전체 보기', callback_data='menupann♡showList')]
+    if lastwill=='pass':
+        res=res+[dict(text='제외태그 선택', callback_data='menupann♡denyTag')]
+    if AD=='deny':
+        res=res+[dict(text='메뉴를 골라줘!', callback_data='menupann♡Run')]
+       
     markup = InlineKeyboardMarkup(inline_keyboard=[ [i] for i in res])
+
     print(res)
     print(markup)
     return markup
     
-def hsh(letter,cat):
-    if cat=='normal':
-        res=str(letter['chid'])+letter['name']+letter['intent']
-    else: res=str(letter['chid'])+letter['intent']
-    return res
     
-#MarkupCreate(288,'allow')
 
+    
+def tags(chid):
+    ## sql 쿼리 검색 ###
+    return ['수유','미아','미삼','훠거','길음','무한','냉면','수영']
+    
+def Pick(chid,allow,deny):
+    if allow==None: pass
+    if deny==None:pass
+    ###SQL쿼리###
+    allows = ['엄마손 기사식당','구겁실 국밥집','명륜진사갈비','일품향 훠거']
+    denys = ['엄마손 기사식당','명인만두']
+    res = random.choice(list(set(allows)-set(denys)))
+    
+    return res
+def Picklist(chid,allow,deny):
+    ###SQL쿼리###
+    if allow==None : print(allow)
+    if deny==None : print(deny)
+    allows = ['엄마손 기사식당','구겁실 국밥집','명륜진사갈비','일품향 훠거']
+    denys = ['엄마손 기사식당','명인만두']
+    res = list(set(allows)-set(denys))
+    print(res)
+    e=''
+    for i in range(len(res)):
+        e=e+str(i+1)+'. '+res[i]+'\n'
+    print(e)
+    return e    
+
+def addMenu(chid, chat):
+    menu = chat.replace('/메뉴추가 ','')
+    menu = chat.replace('/메뉴추가','')
+    return 'okay'
+
+def addTag(chid, chat):
+    tag = chat.replace('/태그추가 ','')
+    tag = chat.replace('/태그추가','')
+    return 'okay'
+    

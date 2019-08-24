@@ -1,189 +1,161 @@
+#-*- coding:utf-8 -*-
+
 import sys
+import io
 import asyncio
 import random
-import telepot
+from telepot import glance, message_identifier
 import telepot.aio
-import time
+
 from telepot.aio.loop import MessageLoop
 from telepot.namedtuple import ReplyKeyboardMarkup, KeyboardButton, ReplyKeyboardRemove, ForceReply
 from telepot.namedtuple import InlineKeyboardMarkup, InlineKeyboardButton
 from telepot.namedtuple import InlineQueryResultArticle, InlineQueryResultPhoto, InputTextMessageContent
+from telepot.aio.delegate import per_chat_id, per_callback_query_origin, create_open, pave_event_space, include_callback_query_chat_id
+
+import re
+import time
+import datetime
 
 from lib_ import key_
-from lib_ import core
-from lib_ import cust
-from lib_ import magic
-from lib_ import board
-import re
+from lib_ import magic, menupann, core, board
 
-message_with_inline_keyboard = None
+brain=''
+sys.stdout = io.TextIOWrapper(sys.stdout.detach(), encoding = 'utf-8')
+sys.stderr = io.TextIOWrapper(sys.stderr.detach(), encoding = 'utf-8')
 
 
-async def on_chat_message(msg):
-    content_type, chat_type, chat_id = telepot.glance(msg)
-    print('Chat:', content_type, chat_type, chat_id)
-    print(msg)
-    letter={'name':'', 'chid':'', 'type':'', 'chat':''}
-    if content_type != 'text':
-        return
-    elif content_type == 'text':
-        letter['name'] = msg['from']['first_name']
-        letter['chid'] = chat_id
-        letter['type'] = 'text'
-        letter['chat'] = msg['text']
+class Unbuffered(object):
+   def __init__(self, stream):
+     self.stream = stream
+   def write(self, data):
+     self.stream.write(data)
+     self.stream.flush()
+   def writelines(self, datas):
+     self.stream.writelines(datas)
+     self.stream.flush()
+   def __getattr__(self, attr):
+     return getattr(self.stream, attr)
 
+class Global(object):
+    Timeout= None
+
+class Emperor(telepot.aio.helper.ChatHandler, Global):
+    def __init__(self, *args, **kwargs):
+        super(Emperor, self).__init__(*args,**kwargs)
+
+
+
+
+
+
+    async def on_chat_message(self, msg):
+        content_type, chat_type, chid = glance(msg)
+        chat, name = msg['text'], msg['from']['first_name']
+        letter={'name':'', 'chid':'', 'type':'', 'chat':''}
+        if content_type != 'text': return
+        elif content_type == 'text':
+            letter['name'] = name
+            letter['chid'] = chid
+            letter['type'] = content_type
+            letter['chat'] = chat
+        print(chat)
         A = re.compile('^[0-9]+분 타이머$')
         B = re.compile('^/pull +[0-9]+$')
+        if chat == '/ㅎㅇ': await self.sender.sendMessage(name+'님 '+magic.ping())
+        if chat == '/채팅방': await self.sender.sendMessage(chid)
+        if chat == '/주사위':await core.dice(bot, letter)
+        if chat =='/15': await self.sender.sendMessage(await core.fif_gui(), reply_markup = InlineKeyboardMarkup(inline_keyboard=[[dict(text='불만 있어요?', callback_data='fif_gui')],]))
+        if chat.count('ㅋ')>5: await self.sender.sendMessage(core.funnybell(bot,letter))
+        if chat.find('=') == 0 : await self.sender.sendMessage(await core.celc(chat, UAkey), parse_mode='HTML')
+        if chat.find('>') == 0 or chat.find('»') == 0  : await self.sender.sendMessage(await core.papago(chat, naver))
+        if chat.find('$') == 0 :
+            a,b=await board.bbs(letter,bbskey)
+            await self.sender.sendMessage(a,reply_markup=b)
+        ## $, >, =, /주사위, /15, 고독한공부방이라던가,,,,,,
+        if chat == '뭐먹지?' or chat == '모먹지?':
+            Global.Timeout= None
+            sent = await self.sender.sendMessage('배가 고픈 분위기군요..', reply_markup=menupann.start())
+            await self.edittext(sent, 5, '배가 고픈 분위기군요..')
+            return 'okay'
+        if A.match(chat):
+            minn, keyboard = await core.hglassStart(chat)
+            await self.sender.sendMessage(minn, reply_markup=keyboard)
 
-
-        if letter['chid'] == mew:
-            if letter['chat'].find('불')==0:
-                await cust.smarthome(bot, letter)
-
-            if letter['chat'] == 'c':
-                markup = ReplyKeyboardMarkup(keyboard=[
-                    ['Plain text', KeyboardButton(text='Text only')],
-                    [dict(text='Phone', request_contact=True), KeyboardButton(text='Location', request_location=True)],
-                ])
-                await bot.sendMessage(chat_id, 'Custom keyboard with various buttons', reply_markup=markup)
-
-           
-            if letter['chat'] == 'i':
-                markup = InlineKeyboardMarkup(inline_keyboard=[
-                    [dict(text='Telegram URL', url='https://core.telegram.org/')],
-                    [InlineKeyboardButton(text='Callback - show notification', callback_data='notification')],
-                    [dict(text='Callback - show alert', callback_data='alert')],
-                    [InlineKeyboardButton(text='Callback - edit message', callback_data='edit')],
-                    [dict(text='Switch to using bot inline', switch_inline_query='initial query')],
-                ])
-                
-                global message_with_inline_keyboard
-                message_with_inline_keyboard = await bot.sendMessage(chat_id, 'Inline keyboard with various buttons',
-                                                                     reply_markup=markup)
-            if letter['chat'] == 'h':
-                markup = ReplyKeyboardRemove()
-                await bot.sendMessage(chat_id, 'Hide custom keyboard', reply_markup=markup)
-            if letter['chat'] == 'f':
-                markup = ForceReply()
-                await bot.sendMessage(chat_id, 'Force reply', reply_markup=markup)
-
-
-        if letter['chat'] == '/ㅎㅇ':
-            await magic.ping(bot,letter, TOKEN)
-        elif letter['chat'] == '/하이':
-            await magic.ping_full(bot,letter, TOKEN)
-        elif letter['chat'] == '/채팅방':
-            await bot.sendMessage(chat_id, chat_id)
-        elif letter['chat'] == '/주사위':
-            await core.dice(bot, letter)
-        elif letter['chat'] == '/15':
-            await core.fif_gui(bot, letter)
-
-        elif A.match(letter['chat']):
-            await core.hglass(bot, letter)
-        elif B.match(letter['chat']):
-            await core.dbm_pull(bot, letter)
-        elif letter['chat'] == '>>' or letter['chat']=='»':
-            await core.papago_help(bot, letter, naver)
-        elif letter['chat'].find('>>') ==0 or letter['chat'].find('»') ==0 :
-            await core.papago(bot, letter, naver)
-        elif letter['chat'].find('=') ==0 :
-            await core.celc(bot, letter, UAkey)
-
-        elif letter['chat'].count('쐐기') == 1 and letter['chat'].count('뭐') == 1:
-            await core.keystone(bot, letter)
-
-
-        elif letter['chat'].find('$') ==0 :
-            await board.bbs(bot, letter, bbskey)
-    return 'okay'
-
-
-async def on_callback_query(msg):
-    query_id, from_id, data = telepot.glance(msg, flavor='callback_query')
-    print('Callback query:', query_id, from_id, data)
-    print(msg)
-    if data == 'notification':
-        await bot.answerCallbackQuery(query_id, text='Notification at top of screen')
-    elif data == 'alert':
-        await bot.answerCallbackQuery(query_id, text='Alert!', show_alert=True)
-    elif data == 'edit':
-        global message_with_inline_keyboard
-
-        if message_with_inline_keyboard:
-            msg_idf = telepot.message_identifier(message_with_inline_keyboard)
-            await bot.editMessageText(msg_idf, 'NEW MESSAGE HERE!!!!!')
+    async def edittext(self, sent, s, letter):
+        self._keyboard_msg_ident = message_identifier(sent)
+        self.txtedit = telepot.aio.helper.Editor(self.bot, self._keyboard_msg_ident)
+        await asyncio.sleep(s)
+        if Global.Timeout == None:
+            print(Global.Timeout)
+            await self.txtedit.editMessageText(letter)
         else:
-            await bot.answerCallbackQuery(query_id, text='No previous message to edit')
+            return 'okay'
 
-    elif data == 'AA':
-        await bot.answerCallbackQuery(query_id, text='AA')
-    elif data == 'BB':
-        await bot.answerCallbackQuery(query_id, text='BB')
-    elif data == 'CC':
-        await bot.answerCallbackQuery(query_id, text='CC')
-    elif data == 'DD':
-        await bot.answerCallbackQuery(query_id, text='DD')
-    elif data == 'EE':
-        await bot.answerCallbackQuery(query_id, text=' * * Evil Empire * * \n용개형 보고있지?')
-    elif data == '001':
-        await bot.answerCallbackQuery(query_id, text='001', show_alert=True)
-    elif data == '002':
-        await bot.answerCallbackQuery(query_id, text='002', show_alert=True)
-    elif data == '003':
-        await bot.answerCallbackQuery(query_id, text='003', show_alert=True)
-   
+class Slave(telepot.aio.helper.CallbackQueryOriginHandler, Global):
+    def __init__(self, *args, **kwargs):
+        super(Slave, self).__init__(*args, **kwargs)
+        self._everyTag=None
+        self._allowTag = None
+        self._denyTag = None
+        self._addTag = None
+
+    async def on_callback_query(self, msg):
+        query_id, from_id, query_data = glance(msg, flavor='callback_query')
+        letter={'name':msg['from']['first_name'], 'chid':from_id, 'type':'', 'chat':query_data}
+        print(msg)
+        q = query_data.split('♡')
+        if q[0] == 'menupann':
+            Global.Timeout='working...'
+            print(Global.Timeout)
+            if q[1] == 'Exit': await self.editor.editMessageText('취소되었습니다.')
+            if q[1] == 'allowTag':
+                if self._everyTag == None:
+                    self._everyTag=menupann.tags(query_id)
+                    await self.editor.editMessageText('배가 고픈 분위기군요..\n포함될 태그를 알려주세요.\n'+str(self._allowTag), reply_markup=menupann.MarkupCreate(self._everyTag,'first_allow'))
+                if len(q)==3:
+                    if q[2] =='ALL': self._allowTag= None
+                    else:
+                        if self._allowTag==None:self._allowTag=[]
+                        self._allowTag.append(q[2])
+                        self._everyTag.remove(q[2])
+                        await self.editor.editMessageText('배가 고픈 분위기군요..\n포함될 태그를 알려주세요.\n'+str(self._allowTag), reply_markup=menupann.MarkupCreate(self._everyTag,'allow'))
+            if q[1] == 'denyTag':
+                if len(q)==3:
+                    if self._denyTag==None:self._denyTag=[]
+                    self._denyTag.append(q[2])
+                    self._everyTag.remove(q[2])
+                await self.editor.editMessageText('배가 고픈 분위기군요..\n포함될 태그를 알려주세요.\n'+str(self._allowTag)+'\n제외될 태그를 알려주세요.\n'+str(self._denyTag), reply_markup=menupann.MarkupCreate(self._everyTag,'deny'))
+            if q[1] == 'Run': await self.editor.editMessageText('오늘의 메뉴는 '+str(menupann.Pick(from_id,self._allowTag,self._denyTag))+'입니다!',reply_markup=menupann.MarkupCreate(self._everyTag,'show'))
+            if q[1] == 'showList': await self.editor.editMessageText('나올 수 있었던곳들...\n'+menupann.Picklist(from_id,self._allowTag,self._denyTag))
+        if q[0] == 'hglass':
+            w, target= q[1], q[2]
+            process=22
+            await self.editor.editMessageText(str(q[1])+'분\n→시작합니다!')
+            while float(process)>0:
+                w, clock,process  = await core.hglass(target)
+                await self.editor.editMessageText(str(q[1])+'분\n→'+clock)
+            print(w)
+            w, clock, process = await core.hglass(target)
+            await self.editor.editMessageText(str(q[1])+'분\n→'+clock+' 땡!!')
+        if q[0] == 'fif_gui': await self.editor.editMessageText(await core.fif_gui(), reply_markup = InlineKeyboardMarkup(inline_keyboard=[[dict(text='아직 불만 있어요?', callback_data='fif_gui')]]))
+        if q[0] == 'bbs':
+            if q[1] =='open':
+                letter['chat']=q[2]
+                a,b=await board.bbs(letter,bbskey)
+                await self.editor.editMessageText(a, reply_markup =b )
 
 
-def on_inline_query(msg):
-    def compute():
-        query_id, from_id, query_string = telepot.glance(msg, flavor='inline_query')
-        print('Computing for: %s' % query_string)
-
-        articles = [InlineQueryResultArticle(
-            id='abcde', title='Telegram',
-            input_message_content=InputTextMessageContent(message_text='Telegram is a messaging app')),
-            dict(type='article',
-                 id='fghij', title='Google', input_message_content=dict(message_text='Google is a search engine'))]
-
-        photo1_url = 'https://core.telegram.org/file/811140934/1/tbDSLHSaijc/fdcc7b6d5fb3354adf'
-        photo2_url = 'https://www.telegram.org/img/t_logo.png'
-        photos = [InlineQueryResultPhoto(
-            id='12345', photo_url=photo1_url, thumb_url=photo1_url),
-            dict(type='photo',
-                 id='67890', photo_url=photo2_url, thumb_url=photo2_url)]
-
-        result_type = query_string[-1:].lower()
-
-        if result_type == 'a':
-            return articles
-        elif result_type == 'p':
-            return photos
-        else:
-            results = articles if random.randint(0, 1) else photos
-            if result_type == 'b':
-                return dict(results=results, switch_pm_text='Back to Bot',
-                            switch_pm_parameter='Optional_start_parameter')
-            else:
-                return dict(results=results)
-
-    answerer.answer(msg, compute)
+        print(q)
 
 
-def on_chosen_inline_result(msg):
-    result_id, from_id, query_string = telepot.glance(msg, flavor='chosen_inline_result')
-    print('Chosen Inline Result:', result_id, from_id, query_string)
 
-def message_thinking(chat):
-    return 'okay'
-
-TOKEN = key_.kids('jv')
 
 UAkey = key_.kids('UAkey')
 naver = key_.kids('naver')
 phgs = key_.kids('phgs')
 bbskey = key_.kids('bbs')
-bot = telepot.aio.Bot(TOKEN)
+
 
 me=key_.adds ('me')
 mew=key_.adds ('mew')
@@ -191,13 +163,17 @@ ph=key_.adds ('pharmacy')
 
 
 
-answerer = telepot.aio.helper.Answerer(bot)
+bot = telepot.aio.DelegatorBot(key_.kids('jv'), [
+    pave_event_space()(
+            per_chat_id(), create_open, Emperor, timeout=3),
+    pave_event_space()(
+            per_callback_query_origin(), create_open, Slave, timeout=300),
+    ])
 
+
+sys.stdout=Unbuffered(sys.stdout)
 loop = asyncio.get_event_loop()
-loop.create_task(MessageLoop(bot, {'chat': on_chat_message,
-                                   'callback_query': on_callback_query,
-                                   'inline_query': on_inline_query,
-                                   'chosen_inline_result': on_chosen_inline_result}).run_forever())
+loop.create_task(MessageLoop(bot).run_forever())
 print('<--- --- Listening ... --- --->')
 loop.run_forever()
 
