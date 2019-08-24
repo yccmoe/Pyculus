@@ -55,7 +55,7 @@ def ago(time):
 
 
 
-async def bbs(chat, key):
+async def bbs(letter, key):
     name, chid, chat = letter['name'],letter['chid'],letter['chat']
     hst, usr, pss, dbb  = key['host'], key['user'], key['pass'], key['db']
     re_help=re.compile('^\${2}$')
