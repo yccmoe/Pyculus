@@ -61,7 +61,7 @@ async def hglass(target):
         con = datetime.datetime.fromtimestamp(process).strftime("%M:%S")
         if process <10: w = 1
         elif process <600: w=5
-        else: w = 300
+        else: w = 30
     else:
         w=0
         con = '00 : 00'
