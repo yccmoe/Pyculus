@@ -65,7 +65,7 @@ async def hglass(target):
     else:
         w=0
         con = '00 : 00'
-    time.sleep(w)
+    await asyncio.sleep(w)
     return w, con,process
 
 
