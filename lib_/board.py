@@ -4,7 +4,7 @@ import telepot.aio
 import datetime
 import re
 import pymysql
-
+from telepot.namedtuple import InlineKeyboardMarkup, InlineKeyboardButton
 
 message_with_inline_keyboard = None
 
