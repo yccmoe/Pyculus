@@ -13,11 +13,10 @@ import re
 
 from lib_ import key_
 from lib_ import b2ta
-
+from lib_ import brain
 
 message_with_inline_keyboard = None
-brain=''
-
+brain = {}
 
 async def on_chat_message(msg):
     content_type, chat_type, chat_id = telepot.glance(msg)
@@ -46,18 +45,20 @@ async def on_chat_message(msg):
         if letter['chat'] == 'ee' or letter['chat']=='i':
             global message_with_inline_keyboard
             global brain
-            brain=''
             if letter['chat']=='ee':
                 markup = InlineKeyboardMarkup(inline_keyboard=[
                     [dict(text='aaa', callback_data='aaa'),dict(text='bbb', callback_data='bbb')],
                     [dict(text='ccc', callback_data='ccc'),dict(text='ddd', callback_data='ddd')],
                 ])
-
-                message_with_inline_keyboard = await bot.sendMessage(chat_id, 'ee',
+                letter['intent'] = 'ABC버튼누르기' 
+                cat='normal'
+                hash = hsh(letter)
+                brain[hash] = {'cat':cat, 'data':'이제부터 버튼을 눌러볼게요...!\n'}
+                print(brain)
+                message_with_inline_keyboard = await bot.sendMessage(chat_id, '이제부터 버튼을 눌러볼게요...!',
                                                                      reply_markup=markup)
-                                                                     
-                                                                     
-                                                                 
+               
+                print(brain)
             if letter['chat'] == 'i':
                 markup = InlineKeyboardMarkup(inline_keyboard=[
                     [dict(text='Telegram URL', url='https://core.telegram.org/')],
@@ -87,6 +88,7 @@ async def on_callback_query(msg):
     query_id, from_id, data = telepot.glance(msg, flavor='callback_query')
     print('Callback query:', query_id, from_id, data)
     print(msg)
+    letter={'name':msg['from']['first_name'], 'chid':from_id, 'type':'callback', 'chat':''}
     global brain
     if data == 'notification':
         await bot.answerCallbackQuery(query_id, text='Notification at top of screen')
@@ -100,38 +102,39 @@ async def on_callback_query(msg):
             await bot.editMessageText(msg_idf, 'NEW MESSAGE HERE!!!!!')
         else:
             await bot.answerCallbackQuery(query_id, text='No previous message to edit')
-    elif data=='aaa':
-        brain = brain+'aaa'
-        markup = InlineKeyboardMarkup(inline_keyboard=[
-                    [dict(text='aaa', callback_data='aaa'),dict(text='bbb', callback_data='bbb')],
-                    [dict(text='ccc', callback_data='ccc'),dict(text='ddd', callback_data='ddd')],
-                ])
-        msg_idf = telepot.message_identifier(message_with_inline_keyboard)
-        await bot.editMessageText(msg_idf, brain, reply_markup=markup)
-    elif data=='bbb':
-        brain = brain+'bbb'
-        markup = InlineKeyboardMarkup(inline_keyboard=[
-                    [dict(text='aaa', callback_data='aaa'),dict(text='bbb', callback_data='bbb')],
-                    [dict(text='ccc', callback_data='ccc'),dict(text='ddd', callback_data='ddd')],
-                ])
-        msg_idf = telepot.message_identifier(message_with_inline_keyboard)
-        await bot.editMessageText(msg_idf, brain, reply_markup=markup)        
-    elif data=='ccc':
-        brain = brain+'ccc'
-        markup = InlineKeyboardMarkup(inline_keyboard=[
-                    [dict(text='aaa', callback_data='aaa'),dict(text='bbb', callback_data='bbb')],
-                    [dict(text='ccc', callback_data='ccc'),dict(text='ddd', callback_data='ddd')],
-                ])
-        msg_idf = telepot.message_identifier(message_with_inline_keyboard)
-        await bot.editMessageText(msg_idf, brain, reply_markup=markup)
-    elif data=='ddd':
-        brain = brain+'ddd'
-        markup = InlineKeyboardMarkup(inline_keyboard=[
-                    [dict(text='aaa', callback_data='aaa'),dict(text='bbb', callback_data='bbb')],
-                    [dict(text='ccc', callback_data='ccc'),dict(text='ddd', callback_data='ddd')],
-                ])
-        msg_idf = telepot.message_identifier(message_with_inline_keyboard)
-        await bot.editMessageText(msg_idf, brain, reply_markup=markup)                
+    
+    h = hsh(letter)+'ABC버튼누르기'
+    if h in list(brain.keys()):
+        print('ee')
+        if data=='aaa':
+            markup = InlineKeyboardMarkup(inline_keyboard=[
+                        [dict(text='aaa', callback_data='aaa'),dict(text='bbb', callback_data='bbb')],
+                        [dict(text='ccc', callback_data='ccc'),dict(text='ddd', callback_data='ddd')],
+                    ])
+            msg_idf = telepot.message_identifier(message_with_inline_keyboard)
+            brain[h]['letter'] = 
+            await bot.editMessageText(msg_idf, brain, reply_markup=markup)
+        elif data=='bbb':
+            markup = InlineKeyboardMarkup(inline_keyboard=[
+                        [dict(text='aaa', callback_data='aaa'),dict(text='bbb', callback_data='bbb')],
+                        [dict(text='ccc', callback_data='ccc'),dict(text='ddd', callback_data='ddd')],
+                    ])
+            msg_idf = telepot.message_identifier(message_with_inline_keyboard)
+            await bot.editMessageText(msg_idf, brain, reply_markup=markup)        
+        elif data=='ccc':
+            markup = InlineKeyboardMarkup(inline_keyboard=[
+                        [dict(text='aaa', callback_data='aaa'),dict(text='bbb', callback_data='bbb')],
+                        [dict(text='ccc', callback_data='ccc'),dict(text='ddd', callback_data='ddd')],
+                    ])
+            msg_idf = telepot.message_identifier(message_with_inline_keyboard)
+            await bot.editMessageText(msg_idf, brain, reply_markup=markup)
+        elif data=='ddd':
+            markup = InlineKeyboardMarkup(inline_keyboard=[
+                        [dict(text='aaa', callback_data='aaa'),dict(text='bbb', callback_data='bbb')],
+                        [dict(text='ccc', callback_data='ccc'),dict(text='ddd', callback_data='ddd')],
+                    ])
+            msg_idf = telepot.message_identifier(message_with_inline_keyboard)
+            await bot.editMessageText(msg_idf, brain, reply_markup=markup)                
 
 def on_inline_query(msg):
     def compute():
@@ -174,6 +177,21 @@ def on_chosen_inline_result(msg):
 
 def message_thinking(chat):
     return 'okay'
+    
+def unq(old):
+    new=[]
+    for i in range(len(old)):
+        new.append(frozenset(old[i].items()))
+    new=list(set(new))
+    old=[]
+    for i in range(len(new)):
+        old.append(dict(new[i]))
+    return old
+
+def hsh(letter):
+    try:res = str(letter['chid'])+str(letter['name'])+str(letter['intent'])
+    except:res=str(letter['chid'])+str(letter['name'])
+    return res
 
 TOKEN = key_.kids('beta')
 

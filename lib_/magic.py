@@ -14,3 +14,13 @@ async def ping_full (bot, letter, TOKEN):
     fromdir = os.path.dirname(os.path.abspath(__file__))
     await bot.sendMessage(chid, "시스템 정보...\n\n`@/home/yamcc/Pyculus/Main.py\n@"+fromdir+"\n\nkey_"+TOKEN+"\n\nchid@"+str(chid)+"\n\nuser@"+name+"`", parse_mode='markdown')
     return 'okay'    
+    
+def hsh(letter,cat):
+    if cat=='normal':
+        res=str(letter['chid'])+letter['name']+letter['intent']
+    else: res=str(letter['chid'])+letter['intent']
+    return res
+    
+    
+    
+    
