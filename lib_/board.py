@@ -85,7 +85,7 @@ async def bbs(chat, key):
                 res=res+'#'+str(i+1)+' '+rs[i][0]+tale+'\n'
                 res=res+[dict(text='#'+str(i+1)+' '+rs[i][0]+tale,  callback_data='bbs♡open♡'+str(i+1))]
         conn.close()
-            print(res)
+        print(res)
         markup = InlineKeyboardMarkup(inline_keyboard=[ [i] for i in res])
         res = '글 목록.'
 #    except:
