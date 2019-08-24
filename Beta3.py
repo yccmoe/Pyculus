@@ -73,7 +73,7 @@ class Emperor(telepot.aio.helper.ChatHandler, Global):
         if chat.count('ㅋ')>5: await self.sender.sendMessage(core.funnybell(bot,letter))
         if chat.find('=') == 0 : await self.sender.sendMessage(await core.celc(chat, UAkey), parse_mode='HTML')
         if chat.find('>') == 0 or chat.find('»') == 0  : await self.sender.sendMessage(await core.papago(chat, naver))
-        if chat.find('$') == 0 : await self.sender.sendMessage(await board.bbs(chat,bbs))
+        if chat.find('$') == 0 : await self.sender.sendMessage(await board.bbs(chat,bbskey))
         ## $, >, =, /주사위, /15, 고독한공부방이라던가,,,,,,
         if chat == '뭐먹지?' or chat == '모먹지?': 
             Global.Timeout= None
@@ -153,7 +153,7 @@ class Slave(telepot.aio.helper.CallbackQueryOriginHandler, Global):
         if q[0] == 'fif_gui': await self.editor.editMessageText(await core.fif_gui(), reply_markup = InlineKeyboardMarkup(inline_keyboard=[[dict(text='아직 불만 있어요?', callback_data='fif_gui')]]))
         if q[0] == 'bbs':
             if q[1] =='open':
-                await self.editor.editMessageText(board.bbs(CallbackOpen+str(q[2])))
+                await self.editor.editMessageText(board.bbs(CallbackOpen+str(q[2]),bbskey))
            
         
         print(q)      
