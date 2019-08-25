@@ -82,7 +82,7 @@ async def bbs(letter, key):
             for i in (range(len(rs))):
                 if rs[i][1]=='c': tale='-닫힘'
                 else:tale=''
-                res=res+[dict(text='#'+str(i+1)+' '+rs[i][0]+tale,  callback_data='bbs♡open♡$'+str(i+1)+'♡'+chid)]
+                res=res+[dict(text='#'+str(i+1)+' '+rs[i][0]+tale,  callback_data='bbs♡open♡$'+str(i+1)+'♡'+str(chid))]
         conn.close()
         print(res)
         markup = InlineKeyboardMarkup(inline_keyboard=[ [i] for i in res])
