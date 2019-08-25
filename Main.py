@@ -103,7 +103,7 @@ class Slave(telepot.aio.helper.CallbackQueryOriginHandler, Global):
     async def on_callback_query(self, msg):
 
         query_id, from_id, query_data = glance(msg, flavor='callback_query')
-        letter={'name':msg['from']['first_name'], 'chid':msg['chat']['id'], 'type':''}
+        letter={'name':msg['from']['first_name'], 'chid':'', 'type':''}
         
         q = query_data.split('♡')
         if q[0] == 'menupann':
@@ -143,6 +143,7 @@ class Slave(telepot.aio.helper.CallbackQueryOriginHandler, Global):
         if q[0] == 'bbs':
             if q[1] =='open':
                 letter['chat']=q[2]
+                letter['chid']=q[3]
                 print(q[2])
                 a,b=await board.bbs(letter,bbskey)
                 await self.editor.editMessageText(a, reply_markup =b )
