@@ -101,11 +101,9 @@ class Slave(telepot.aio.helper.CallbackQueryOriginHandler, Global):
         self._addTag = None
 
     async def on_callback_query(self, msg):
-        print(msg)
-        print(msg['chat'])
-        print(msg['chat']['id'])
+        content_type, chat_type, chid = glance(msg)
         query_id, from_id, query_data = glance(msg, flavor='callback_query')
-        letter={'name':msg['from']['first_name'], 'chid':msg['chat']['id'], 'type':'', 'chat':''}
+        letter={'name':msg['from']['first_name'], 'chid':chid, 'type':'', 'chat':query_data}
         
         q = query_data.split('♡')
         if q[0] == 'menupann':
