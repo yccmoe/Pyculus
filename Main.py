@@ -102,6 +102,8 @@ class Slave(telepot.aio.helper.CallbackQueryOriginHandler, Global):
 
     async def on_callback_query(self, msg):
         print(msg)
+        print(msg['chat'])
+        print(msg['chat']['id'])
         query_id, from_id, query_data = glance(msg, flavor='callback_query')
         letter={'name':msg['from']['first_name'], 'chid':msg['chat']['id'], 'type':'', 'chat':''}
         
