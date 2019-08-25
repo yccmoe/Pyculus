@@ -142,6 +142,7 @@ class Slave(telepot.aio.helper.CallbackQueryOriginHandler, Global):
         if q[0] == 'bbs':
             if q[1] =='open':
                 letter['chat']=q[2]
+                print(q[2])
                 a,b=await board.bbs(letter,bbskey)
                 await self.editor.editMessageText(a, reply_markup =b )
 
