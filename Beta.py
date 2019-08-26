@@ -18,7 +18,7 @@ import time
 import datetime
 
 from lib_ import key_
-from lib_ import magic, menupann, core, board
+from lib_ import magic, menupann, core, board, remote
 
 brain=''
 sys.stdout = io.TextIOWrapper(sys.stdout.detach(), encoding = 'utf-8')
@@ -60,37 +60,14 @@ class Emperor(telepot.aio.helper.ChatHandler, Global):
             letter['type'] = content_type
             letter['chat'] = chat
         print(chat)
-        A = re.compile('^[0-9]+분 타이머$')
-        B = re.compile('^/pull +[0-9]+$')
-        if chat == '/ㅎㅇ': await self.sender.sendMessage(name+'님 '+magic.ping())
-        if chat == '/채팅방': await self.sender.sendMessage(chid)
-        if chat == '/주사위':await core.dice(bot, letter)
-        if chat =='/15': await self.sender.sendMessage(await core.fif_gui(), reply_markup = InlineKeyboardMarkup(inline_keyboard=[[dict(text='불만 있어요?', callback_data='fif_gui')],]))
-        if chat.count('ㅋ')>5: await self.sender.sendMessage(core.funnybell(bot,letter))
-        if chat.find('=') == 0 : await self.sender.sendMessage(await core.celc(chat, UAkey), parse_mode='HTML')
-        if chat.find('>') == 0 or chat.find('»') == 0  : await self.sender.sendMessage(await core.papago(chat, naver))
-        if chat.find('$') == 0 :
-            a,b=await board.bbs(letter,bbskey)
-            await self.sender.sendMessage(a,reply_markup=b)
-        ## $, >, =, /주사위, /15, 고독한공부방이라던가,,,,,,
-        if chat == '뭐먹지?' or chat == '모먹지?':
-            Global.Timeout= None
-            sent = await self.sender.sendMessage('배가 고픈 분위기군요..', reply_markup=menupann.start())
-            await self.edittext(sent, 5, '배가 고픈 분위기군요..')
-            return 'okay'
-        if A.match(chat):
-            minn, keyboard = await core.hglassStart(chat)
-            await self.sender.sendMessage(minn, reply_markup=keyboard)
 
-    async def edittext(self, sent, s, letter):
-        self._keyboard_msg_ident = message_identifier(sent)
-        self.txtedit = telepot.aio.helper.Editor(self.bot, self._keyboard_msg_ident)
-        await asyncio.sleep(s)
-        if Global.Timeout == None:
-            print(Global.Timeout)
-            await self.txtedit.editMessageText(letter)
-        else:
-            return 'okay'
+        if chat == '/ㅎㅇ': await self.sender.sendMessage(name+'@'+str(chid)+'님 '+magic.ping())
+        if chat == 'ㅎㅇ' : 
+            await self.sender.sendMessage(remote.greeting(),reply_markup=remote.butten())
+        return 'okay'
+        
+        
+         
 
 class Slave(telepot.aio.helper.CallbackQueryOriginHandler, Global):
     def __init__(self, *args, **kwargs):
@@ -102,50 +79,18 @@ class Slave(telepot.aio.helper.CallbackQueryOriginHandler, Global):
 
     async def on_callback_query(self, msg):
         query_id, from_id, query_data = glance(msg, flavor='callback_query')
-        letter={'name':msg['from']['first_name'], 'chid':from_id, 'type':'', 'chat':query_data}
         print(msg)
+        
+        letter={'name':msg['from']['first_name'], 'chid':msg['message']['chat']['id'], 'type':'', 'orgn':msg['message']['text']}
+        
         q = query_data.split('♡')
-        if q[0] == 'menupann':
-            Global.Timeout='working...'
-            print(Global.Timeout)
-            if q[1] == 'Exit': await self.editor.editMessageText('취소되었습니다.')
-            if q[1] == 'allowTag':
-                if self._everyTag == None:
-                    self._everyTag=menupann.tags(query_id)
-                    await self.editor.editMessageText('배가 고픈 분위기군요..\n포함될 태그를 알려주세요.\n'+str(self._allowTag), reply_markup=menupann.MarkupCreate(self._everyTag,'first_allow'))
-                if len(q)==3:
-                    if q[2] =='ALL': self._allowTag= None
-                    else:
-                        if self._allowTag==None:self._allowTag=[]
-                        self._allowTag.append(q[2])
-                        self._everyTag.remove(q[2])
-                        await self.editor.editMessageText('배가 고픈 분위기군요..\n포함될 태그를 알려주세요.\n'+str(self._allowTag), reply_markup=menupann.MarkupCreate(self._everyTag,'allow'))
-            if q[1] == 'denyTag':
-                if len(q)==3:
-                    if self._denyTag==None:self._denyTag=[]
-                    self._denyTag.append(q[2])
-                    self._everyTag.remove(q[2])
-                await self.editor.editMessageText('배가 고픈 분위기군요..\n포함될 태그를 알려주세요.\n'+str(self._allowTag)+'\n제외될 태그를 알려주세요.\n'+str(self._denyTag), reply_markup=menupann.MarkupCreate(self._everyTag,'deny'))
-            if q[1] == 'Run': await self.editor.editMessageText('오늘의 메뉴는 '+str(menupann.Pick(from_id,self._allowTag,self._denyTag))+'입니다!',reply_markup=menupann.MarkupCreate(self._everyTag,'show'))
-            if q[1] == 'showList': await self.editor.editMessageText('나올 수 있었던곳들...\n'+menupann.Picklist(from_id,self._allowTag,self._denyTag))
-        if q[0] == 'hglass':
-            w, target= q[1], q[2]
-            process=22
-            await self.editor.editMessageText(str(q[1])+'분\n→시작합니다!')
-            while float(process)>0:
-                w, clock,process  = await core.hglass(target)
-                await self.editor.editMessageText(str(q[1])+'분\n→'+clock)
-            print(w)
-            w, clock, process = await core.hglass(target)
-            await self.editor.editMessageText(str(q[1])+'분\n→'+clock+' 땡!!')
-        if q[0] == 'fif_gui': await self.editor.editMessageText(await core.fif_gui(), reply_markup = InlineKeyboardMarkup(inline_keyboard=[[dict(text='아직 불만 있어요?', callback_data='fif_gui')]]))
-        if q[0] == 'bbs':
-            if q[1] =='open':
-                letter['chat']=q[2]
-                a,b=await board.bbs(letter,bbskey)
-                await self.editor.editMessageText(a, reply_markup =b )
-
-
+        if q[0]=='remote':
+            if q[1]=='dest': mk = remote.distAllbutten()
+            elif q[1]=='destreal' or q[1]=='exit': mk=None
+            else: mk = remote.butten()
+            o=letter['orgn']
+            o=o+'\n'+remote.press(letter['name'],q[1])
+            await self.editor.editMessageText(o,reply_markup=mk)
         print(q)
 
 

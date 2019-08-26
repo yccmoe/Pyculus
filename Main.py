@@ -81,6 +81,8 @@ class Emperor(telepot.aio.helper.ChatHandler, Global):
         if A.match(chat):
             minn, keyboard = await core.hglassStart(chat)
             await self.sender.sendMessage(minn, reply_markup=keyboard)
+        if chid == ph or chid == mew:
+            if chat == 'ㅎㅇ' : await self.sender.sendMessage(remote.greeting(),reply_markup=remote.butten())
 
     async def edittext(self, sent, s, letter):
         self._keyboard_msg_ident = message_identifier(sent)
@@ -103,7 +105,7 @@ class Slave(telepot.aio.helper.CallbackQueryOriginHandler, Global):
     async def on_callback_query(self, msg):
 
         query_id, from_id, query_data = glance(msg, flavor='callback_query')
-        letter={'name':msg['from']['first_name'], 'chid':'', 'type':''}
+        letter={'name':msg['from']['first_name'], 'chid':msg['message']['chat']['id'], 'type':'','orgn':msg['message']['text']}
         
         q = query_data.split('♡')
         if q[0] == 'menupann':
@@ -143,11 +145,15 @@ class Slave(telepot.aio.helper.CallbackQueryOriginHandler, Global):
         if q[0] == 'bbs':
             if q[1] =='open':
                 letter['chat']=q[2]
-                letter['chid']=q[3]
-                print(q[2])
                 a,b=await board.bbs(letter,bbskey)
                 await self.editor.editMessageText(a, reply_markup =b )
-
+        if q[0]=='remote':
+            if q[1]=='dest': mk = remote.distAllbutten()
+            elif q[1]=='destreal' or q[1]=='exit': mk=None
+            else: mk = remote.butten()
+            o=letter['orgn']
+            o=o+'\n'+remote.press(letter['name'],q[1],iftttkey)
+            await self.editor.editMessageText(o,reply_markup=mk)
 
         print(q)
 
@@ -158,7 +164,7 @@ UAkey = key_.kids('UAkey')
 naver = key_.kids('naver')
 phgs = key_.kids('phgs')
 bbskey = key_.kids('bbs')
-
+iftttkey=key_kids('ifttt')
 
 me=key_.adds ('me')
 mew=key_.adds ('mew')
