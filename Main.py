@@ -164,7 +164,7 @@ UAkey = key_.kids('UAkey')
 naver = key_.kids('naver')
 phgs = key_.kids('phgs')
 bbskey = key_.kids('bbs')
-iftttkey=key_kids('ifttt')
+iftttkey=key_.kids('ifttt')
 
 me=key_.adds ('me')
 mew=key_.adds ('mew')
