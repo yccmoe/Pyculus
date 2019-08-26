@@ -18,7 +18,7 @@ import time
 import datetime
 
 from lib_ import key_
-from lib_ import magic, menupann, core, board
+from lib_ import magic, menupann, core, board, remote
 
 brain=''
 sys.stdout = io.TextIOWrapper(sys.stdout.detach(), encoding = 'utf-8')
@@ -66,7 +66,7 @@ class Emperor(telepot.aio.helper.ChatHandler, Global):
         if chat == '/채팅방': await self.sender.sendMessage(chid)
         if chat == '/주사위':await core.dice(bot, letter)
         if chat =='/15': await self.sender.sendMessage(await core.fif_gui(), reply_markup = InlineKeyboardMarkup(inline_keyboard=[[dict(text='불만 있어요?', callback_data='fif_gui')],]))
-        if chat.count('ㅋ')>5: await self.sender.sendMessage(core.funnybell(bot,letter))
+        #if chat.count('ㅋ')>5: await self.sender.sendMessage(core.funnybell(bot,letter))
         if chat.find('=') == 0 : await self.sender.sendMessage(await core.celc(chat, UAkey), parse_mode='HTML')
         if chat.find('>') == 0 or chat.find('»') == 0  : await self.sender.sendMessage(await core.papago(chat, naver))
         if chat.find('$') == 0 :
