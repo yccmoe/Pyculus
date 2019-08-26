@@ -29,7 +29,7 @@ async def template(bot, letter):
     return 'okay'
 
 ##웃어주기
-async def funnybell():
+async def funnybell(bot, letter):
     res = 'ㅋ' * random.randint(2, 22)
     roll = random.randint(1, 100)
     if roll >= 95:
