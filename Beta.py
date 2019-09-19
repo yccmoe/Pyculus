@@ -18,7 +18,7 @@ import time
 import datetime
 
 from lib_ import key_
-from lib_ import magic, menupann, core, board, remote
+from lib_ import magic, menupann, core, board, remote, studylog
 
 brain=''
 sys.stdout = io.TextIOWrapper(sys.stdout.detach(), encoding = 'utf-8')
@@ -63,7 +63,7 @@ class Emperor(telepot.aio.helper.ChatHandler, Global):
 
         if chat == '/ㅎㅇ': await self.sender.sendMessage(name+'@'+str(chid)+'님 '+magic.ping())
         if chat == 'ㅎㅇ' : 
-            await self.sender.sendMessage(remote.greeting(),reply_markup=remote.butten())
+            await self.sender.sendMessage(name+'님 '+studylog.greeting(),reply_markup=studylog.butten(letter))
         return 'okay'
         
         
