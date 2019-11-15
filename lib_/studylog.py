@@ -1,11 +1,16 @@
 import datetime
 import random
+import telepot
 import urllib.request
 import sys
 import io
 from telepot.namedtuple import InlineKeyboardMarkup, InlineKeyboardButton
 sys.stdout = io.TextIOWrapper(sys.stdout.detach(), encoding = 'utf-8')
 sys.stderr = io.TextIOWrapper(sys.stderr.detach(), encoding = 'utf-8')
+
+## Mysql 
+## _No, stime, etime, do, yy, mm, ww, dd
+
 
 def sbj_dict(text):
     if text.count('국어')>=1 :return '국어'
@@ -40,24 +45,24 @@ print(stamp('m'))
 print(stamp('y'))
 print(stamp('e'))
 
-def greeting():
-    his=('안녕하새요!','안녕하세요!','반갑습니다!','오늘도 멋져요!','무엇을 도와드릴까요?','부르셨나요?')
-    return random.choice(his)
-def butten(letter):
-    name = letter['name']
+def subject(letter):
+    s_list=('국어','영어','국사','회계','세법','행법','행학','핫산','코딩','게임','운동','휴식')
+    t = letter['chat']
+    t = t.replace('!','')
+    if t in s_list: return t
+    else: return 'no'
 
-    if name == '준모':
-        res=[
-        [{'text':'국어', 'callback_data': 'studylog♡국어'},{'text':'영어', 'callback_data': 'studylog♡영어'},{'text':'국사', 'callback_data': 'studylog♡국사'}],
-        [{'text':'회계', 'callback_data': 'studylog♡회계'},{'text':'세법', 'callback_data': 'remote♡세법'}],
-        [{'text':'코딩', 'callback_data': 'studylog♡코딩'},{'text':'핫산', 'callback_data': 'studylog♡핫산'},{'text':'운동', 'callback_data': 'studylog♡운동'},{'text':'휴식', 'callback_data': 'studylog♡휴식'}],
-    ]
-    elif name == '승화':
-        res=[
-        [{'text':'국어', 'callback_data': 'studylog♡국어'},{'text':'영어', 'callback_data': 'studylog♡영어'},{'text':'국사', 'callback_data': 'studylog♡국사'}],
-        [{'text':'행정법', 'callback_data': 'studylog♡행법'},{'text':'행정학', 'callback_data': 'remote♡행학'}],
-        [{'text':'운동', 'callback_data': 'studylog♡운동'},{'text':'게임', 'callback_data': 'studylog♡게임'},{'text':'휴식', 'callback_data': 'studylog♡휴식'}],
-    ]
-    keyboard=InlineKeyboardMarkup(inline_keyboard=res)
-    return keyboard
+## if etime이 22인게 있으면....
+## etime = 지금
+## XX N탐!
+## YY 기록시작!!
+async def log(letter,key):
+    s_list=('국어','영어','국사','회계','세법','행법','행학','핫산','코딩','게임','운동','휴식')
+    conn = pymysql.connect(host=hst, user=usr, password=pss, db=dbb, charset='utf8' )
+    t = letter['chat']
+    t = t.replace('!','')
+    if t in s_list: 
+ 
+
+    else: return 'no'
     

@@ -21,9 +21,8 @@ from lib_ import key_
 from lib_ import magic, menupann, core, board, remote, studylog
 
 brain=''
-sys.stdout = io.TextIOWrapper(sys.stdout.detach(), encoding = 'utf-8')
-sys.stderr = io.TextIOWrapper(sys.stderr.detach(), encoding = 'utf-8')
-
+#sys.stdout = io.TextIOWrapper(sys.stdout.detach(), encoding = 'utf-8')
+#sys.stderr = io.TextIOWrapper(sys.stderr.detach(), encoding = 'utf-8')
 
 class Unbuffered(object):
    def __init__(self, stream):
@@ -41,6 +40,7 @@ class Global(object):
     Timeout= None
 
 class Emperor(telepot.aio.helper.ChatHandler, Global):
+
     def __init__(self, *args, **kwargs):
         super(Emperor, self).__init__(*args,**kwargs)
 
@@ -53,6 +53,7 @@ class Emperor(telepot.aio.helper.ChatHandler, Global):
         content_type, chat_type, chid = glance(msg)
         chat, name = msg['text'], msg['from']['first_name']
         letter={'name':'', 'chid':'', 'type':'', 'chat':''}
+        rep_id = msg['message_id']
         if content_type != 'text': return
         elif content_type == 'text':
             letter['name'] = name
@@ -61,9 +62,23 @@ class Emperor(telepot.aio.helper.ChatHandler, Global):
             letter['chat'] = chat
         print(chat)
 
+
         if chat == '/ㅎㅇ': await self.sender.sendMessage(name+'@'+str(chid)+'님 '+magic.ping())
-        if chat == 'ㅎㅇ' : 
-            await self.sender.sendMessage(name+'님 '+studylog.greeting(),reply_markup=studylog.butten(letter))
+        if chat =='msg':await self.sender.sendMessage(msg)
+        if chid == std or chid == mew:
+            if chat == 'ㅎㅇ' : 
+                his=('안녕하새요!','안녕하세요!','반갑습니다!','오늘도 멋져요!','무엇을 도와드릴까요?','부르셨나요?')
+                hi=random.choice(his)
+                if name == '준모': show_keyboard={'keyboard':[['!국어','!영어', '!국사'],['!회계','!세법'],['!코딩','!운동', '!휴식', '!핫산'],['!시마이']],'force_reply': True,'resize_keyboard':True,'selective':True}
+                elif name == '승화': show_keyboard={'keyboard':[['!국어','!영어', '!국사'],['!행학','!행법'],['!운동', '!휴식'],['!시마이']],'force_reply': True,'resize_keyboard':True,'selective':True}
+                nt_show_keyboard = telepot.namedtuple.ReplyKeyboardMarkup(**show_keyboard)
+                await self.sender.sendMessage(name+'님 '+hi, reply_markup=nt_show_keyboard,reply_to_message_id=rep_id)
+            elif chat.find('!') == 0 :
+                remove_keyboard = {'remove_keyboard': True}
+                nt_remove_keyboard = telepot.namedtuple.ReplyKeyboardRemove(**remove_keyboard)
+                if studylog.log(letter,logkey) != 'no':
+                    await self.sender.sendMessage(name+'의 '+studylog.subject(letter)+' 기록 시작!', reply_markup=nt_remove_keyboard)                
+
         return 'okay'
         
         
@@ -91,6 +106,16 @@ class Slave(telepot.aio.helper.CallbackQueryOriginHandler, Global):
             o=letter['orgn']
             o=o+'\n'+remote.press(letter['name'],q[1])
             await self.editor.editMessageText(o,reply_markup=mk)
+        if q[0] == 'studylog':
+            stime = studylog.stamp('e')
+            etime = 22
+            do = q[1]
+            yy = studylog.stamp('y')
+            mm = studylog.stamp('m')
+            ww = studylog.stamp('w')
+            dd = studylog.stamp('d')
+            tempmsg = letter['name']+'의'+do+' 기록 시작!'
+            await self.editor.editMessageText(tempmsg,reply_markup=mk)
         print(q)
 
 
@@ -100,11 +125,13 @@ UAkey = key_.kids('UAkey')
 naver = key_.kids('naver')
 phgs = key_.kids('phgs')
 bbskey = key_.kids('bbs')
+logkey = key_.kids('log')
 
 
 me=key_.adds ('me')
 mew=key_.adds ('mew')
 ph=key_.adds ('pharmacy')
+std=key_.adds ('study')
 
 
 
