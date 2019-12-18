@@ -18,7 +18,7 @@ import time
 import datetime
 
 from lib_ import key_
-from lib_ import magic, menupann, core, board, remote
+from lib_ import magic, menupann, core, board, remote, weather
 
 brain=''
 sys.stdout = io.TextIOWrapper(sys.stdout.detach(), encoding = 'utf-8')
@@ -83,6 +83,8 @@ class Emperor(telepot.aio.helper.ChatHandler, Global):
             await self.sender.sendMessage(minn, reply_markup=keyboard)
         if chid == ph or chid == mew:
             if chat == 'ㅎㅇ' : await self.sender.sendMessage(remote.greeting(),reply_markup=remote.butten())
+        if chat.count('춥나?')==1 or chat.count('덥나?')==1:
+            await weather.wttr(bot,letter)
 
     async def edittext(self, sent, s, letter):
         self._keyboard_msg_ident = message_identifier(sent)

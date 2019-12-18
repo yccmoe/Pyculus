@@ -18,7 +18,7 @@ import time
 import datetime
 
 from lib_ import key_
-from lib_ import magic, menupann, core, board, remote, studylog
+from lib_ import magic, menupann, core, board, remote, weather
 
 brain=''
 #sys.stdout = io.TextIOWrapper(sys.stdout.detach(), encoding = 'utf-8')
@@ -78,7 +78,9 @@ class Emperor(telepot.aio.helper.ChatHandler, Global):
                 nt_remove_keyboard = telepot.namedtuple.ReplyKeyboardRemove(**remove_keyboard)
                 if studylog.log(letter,logkey) != 'no':
                     await self.sender.sendMessage(name+'의 '+studylog.subject(letter)+' 기록 시작!', reply_markup=nt_remove_keyboard)                
-
+        
+        if chat.count('춥나?')==1 or chat.count('덥나?')==1:
+            await weather.wttr(bot,letter)
         return 'okay'
         
         
@@ -126,7 +128,7 @@ naver = key_.kids('naver')
 phgs = key_.kids('phgs')
 bbskey = key_.kids('bbs')
 logkey = key_.kids('log')
-
+wthkey = key_.kids('pyowm')
 
 me=key_.adds ('me')
 mew=key_.adds ('mew')
