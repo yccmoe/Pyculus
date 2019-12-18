@@ -11,6 +11,11 @@ async def wttr(bot,letter):
     name, chid, chat = letter['name'], letter['chid'], letter['chat']
     loc='서울'
     if name=='지웅':loc='천안'
+    if '천안' in chat : loc='천안'
+    if '서울' in chat : loc='서울'
+    if '수원' in chat : loc='수원'
+    if '금정' in chat : loc='금정'
+    if '안양' in chat : loc='안양'
     params = (('lang', 'ko'),('format', 'j1'),)
     if '내일' in chat: 
         no=datetime.datetime.now()+datetime.timedelta(hours=35)
