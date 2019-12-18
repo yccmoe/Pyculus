@@ -14,8 +14,8 @@ async def wttr(bot,letter):
     if '천안' in chat : loc='천안'
     if '서울' in chat : loc='서울'
     if '수원' in chat : loc='수원'
-    if '금정' in chat : loc='금정'
-    if '안양' in chat : loc='안양'
+    if '금정' in chat : loc='금정역'
+    if '안양' in chat : loc='안양역'
     params = (('lang', 'ko'),('format', 'j1'),)
     if '내일' in chat: 
         no=datetime.datetime.now()+datetime.timedelta(hours=35)
@@ -27,6 +27,8 @@ async def wttr(bot,letter):
         elif vs>0: say='오늘 낮보다 '+str(vs)+'° 높아요.'
         else: say='오늘 낮보다 '+str(vs)+'° 낮아요.'
         await bot.sendMessage(chid, loc+'아침: '+r['weather'][1]['hourly'][2]['tempC']+'°, '+r['weather'][1]['hourly'][2]['lang_ko'][0]['value']+'\n낮: '+r['weather'][1]['hourly'][4]['tempC']+'°, '+r['weather'][1]['hourly'][4]['lang_ko'][0]['value']+'\n밤: '+r['weather'][1]['hourly'][7]['tempC']+'°, '+r['weather'][1]['hourly'][7]['lang_ko'][0]['value']+'\n'+say)
+        return 'okay'
     else:
         r= requests.get('http://wttr.in/'+loc, params=params).json()
         await bot.sendMessage(chid, loc+': '+str(r['current_condition'][0]['lang_ko'][0]['value']+', '+r['current_condition'][0]['temp_C']+'°'))
+        return 'okay'
