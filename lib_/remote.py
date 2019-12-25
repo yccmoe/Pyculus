@@ -39,7 +39,7 @@ def butten():
     res=[
         [{'text':'왼쪽', 'callback_data': 'remote♡lb'},{'text':'모두켜기', 'callback_data': 'remote♡Allon'},{'text':'오른쪽', 'callback_data': 'remote♡rb'}],
         [{'text':'모든 불 끄기', 'callback_data': 'remote♡Alloff'}],
-        [{'text':'바테이블', 'callback_data': 'remote♡bar'},{'text':'책상', 'callback_data': 'remote♡desk'}],
+        [{'text':'바테이블', 'callback_data': 'remote♡bar'},{'text':'온열기', 'callback_data': 'remote♡hot'},{'text':'책상', 'callback_data': 'remote♡desk'}],
         [{'text':'! 모든것을 파괴하도록 하십시오.', 'callback_data': 'remote♡dest'}]
     ]
     keyboard=InlineKeyboardMarkup(inline_keyboard=res)
@@ -63,6 +63,9 @@ def press(name,q,key):
         m = name+'님이 모든 불을 끕니다.'
     if q=='bar':
         url.append('https://maker.ifttt.com/trigger/3y_on/with/key/')
+        m = name+'님이 바테이블을 켭니다.'if q=='bar':
+    if q=='hot':
+        url.append('https://maker.ifttt.com/trigger/hot_on/with/key/')
         m = name+'님이 바테이블을 켭니다.'
     if q=='desk':
         if name == "Parlando" : name = '성연'
