@@ -63,7 +63,7 @@ def press(name,q,key):
         m = name+'님이 모든 불을 끕니다.'
     if q=='bar':
         url.append('https://maker.ifttt.com/trigger/3y_on/with/key/')
-        m = name+'님이 바테이블을 켭니다.'if q=='bar':
+        m = name+'님이 바테이블을 켭니다.'
     if q=='hot':
         url.append('https://maker.ifttt.com/trigger/hot_on/with/key/')
         m = name+'님이 난로를 켭니다.'
