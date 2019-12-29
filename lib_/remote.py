@@ -66,7 +66,7 @@ def press(name,q,key):
         m = name+'님이 바테이블을 켭니다.'if q=='bar':
     if q=='hot':
         url.append('https://maker.ifttt.com/trigger/hot_on/with/key/')
-        m = name+'님이 바테이블을 켭니다.'
+        m = name+'님이 난로를 켭니다.'
     if q=='desk':
         if name == "Parlando" : name = '성연'
         if name=='준모' or name=='원용': url.append('https://maker.ifttt.com/trigger/4ch1_on/with/key/')
@@ -79,6 +79,7 @@ def press(name,q,key):
         url.append('https://maker.ifttt.com/trigger/l_off/with/key/')
         url.append('https://maker.ifttt.com/trigger/3y_off/with/key/')
         url.append('https://maker.ifttt.com/trigger/4ch_off/with/key/')
+        url.append('https://maker.ifttt.com/trigger/hot_off/with/key/')
         m = '...'+exitr()
     if q=='dest':
         m = name+'님이 모든것을 파괴합니다...\n...'+exit()
