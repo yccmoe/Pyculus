@@ -1,7 +1,7 @@
 import pafy
 from youtube_search import YoutubeSearch
 import json
-
+import os
 def ysrch(q):
     #name, chid, chat = letter['name'], letter['chid'], letter['chat']
     #q=chat.replace('!','')
@@ -17,7 +17,7 @@ def down(q):
     for a in audio:
         
         print(a.bitrate, a.extension, a.get_filesize())
-    audio[2].download(filepath="/")
-
+    audio[2].download()
+    
 down('조매력 미려적신화')
     
