@@ -12,6 +12,7 @@ from sympy import sympify
 import wolframalpha
 import urllib3
 import urllib.request
+from youtube_search import YoutubeSearch
 import json
 from telepot.namedtuple import InlineKeyboardMarkup, InlineKeyboardButton
 message_with_inline_keyboard = None
@@ -27,6 +28,15 @@ async def template(bot, letter):
     await bot.sendMessage(chid, '- - - some text - - -')
     await asyncio.sleep(1)
     return 'okay'
+
+async def ysrch(bot, letter):
+    name, chid, chat = letter['name'], letter['chid'], letter['chat']
+    q=chat.replace('!','')
+    res = YoutubeSearch(q, max_results=1).to_json()
+    res=res.replace('\\','')
+    d=json.loads(res)
+    return 'Https://youtube.com'+str(d['videos'][0]['link'])
+
 
 ##웃어주기
 async def funnybell(bot, letter):
