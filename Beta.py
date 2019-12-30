@@ -18,7 +18,7 @@ import time
 import datetime
 
 from lib_ import key_
-from lib_ import magic, menupann, core, board, remote, weather,jjs
+from lib_ import magic, menupann, core, board, remote, weather,jjs, ytube
 
 brain=''
 #sys.stdout = io.TextIOWrapper(sys.stdout.detach(), encoding = 'utf-8')
@@ -65,25 +65,14 @@ class Emperor(telepot.aio.helper.ChatHandler, Global):
 
         if chat == '/ㅎㅇ': await self.sender.sendMessage(name+'@'+str(chid)+'님 '+magic.ping())
         if chat =='msg':await self.sender.sendMessage(msg)
-        if chid == std or chid == mew:
-            if chat == 'ㅎㅇ' : 
-                his=('안녕하새요!','안녕하세요!','반갑습니다!','오늘도 멋져요!','무엇을 도와드릴까요?','부르셨나요?')
-                hi=random.choice(his)
-                if name == '준모': show_keyboard={'keyboard':[['!국어','!영어', '!국사'],['!회계','!세법'],['!코딩','!운동', '!휴식', '!핫산'],['!시마이']],'force_reply': True,'resize_keyboard':True,'selective':True}
-                elif name == '승화': show_keyboard={'keyboard':[['!국어','!영어', '!국사'],['!행학','!행법'],['!운동', '!휴식'],['!시마이']],'force_reply': True,'resize_keyboard':True,'selective':True}
-                nt_show_keyboard = telepot.namedtuple.ReplyKeyboardMarkup(**show_keyboard)
-                await self.sender.sendMessage(name+'님 '+hi, reply_markup=nt_show_keyboard,reply_to_message_id=rep_id)
-            elif chat.find('!') == 0 :
-                remove_keyboard = {'remove_keyboard': True}
-                nt_remove_keyboard = telepot.namedtuple.ReplyKeyboardRemove(**remove_keyboard)
-                if studylog.log(letter,logkey) != 'no':
-                    await self.sender.sendMessage(name+'의 '+studylog.subject(letter)+' 기록 시작!', reply_markup=nt_remove_keyboard)                
+        if chat.find('!sr') ==0:
+            await ytube.down(bot,letter)
         
         if chat.find('/누구 ')==0:
             await jjs.wow(bot,letter)
         return 'okay'
         
-        
+            
          
 
 class Slave(telepot.aio.helper.CallbackQueryOriginHandler, Global):
