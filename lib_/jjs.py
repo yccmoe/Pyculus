@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup
 import sys
 import io
 import telepot
-#sys.stdout = io.TextIOWrapper(sys.stdout.detach(), encoding = 'utf-8')
+sys.stdout = io.TextIOWrapper(sys.stdout.detach(), encoding = 'utf-8')
 sys.stderr = io.TextIOWrapper(sys.stderr.detach(), encoding = 'utf-8')
 
 q = '저주'
@@ -39,8 +39,8 @@ async def wow(bot,letter):
             url='https://raider.io/api/v1/characters/profile?region=kr&realm=' + quote(m[i+int((len(m)/2))]) +'&name='+ q +'&fields=gear%2Cmythic_plus_weekly_highest_level_runs%2Cmythic_plus_best_runs%2Cguild'
             #print(url)
             #print(m[i+int((len(m)/2))])
-            hddr = {'Content-Type': 'application/json; charset=utf-8'}
-            r=requests.get(url,headers=hddr).json()
+            headers = {'Content-Type': 'application/json; charset=utf-8'}
+            r=requests.get(url,headers=headers).json()
             try: head = r['name']+'@'+tr(m[i+int((len(m)/2))])+'\n<'+r['guild']['name']+'>\n'+str(r['gear']['item_level_equipped'])+' '+tr(r['active_spec_name']+' '+r['class'])+'\n - - - -\n'
             except: head = r['name']+'@'+tr(m[i+int((len(m)/2))])+'\n'+str(r['gear']['item_level_equipped'])+' '+tr(r['active_spec_name']+' '+r['class'])+'\n - - - -\n'
             brun = r['mythic_plus_best_runs']
