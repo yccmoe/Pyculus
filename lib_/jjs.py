@@ -8,7 +8,6 @@ import telepot
 sys.stdout = io.TextIOWrapper(sys.stdout.detach(), encoding = 'utf-8')
 sys.stderr = io.TextIOWrapper(sys.stderr.detach(), encoding = 'utf-8')
 
-q = '저주'
 async def wow(bot,letter):
     name, chid, chat = letter['name'], letter['chid'], letter['chat']
     q=chat.replace('/누구 ','')

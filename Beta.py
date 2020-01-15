@@ -18,11 +18,11 @@ import time
 import datetime
 
 from lib_ import key_
-from lib_ import magic, menupann, core, board, remote, weather,jjs, ytube
+from lib_ import magic, menupann, core, board, remote, weather,jjs, ytube2
 
 brain=''
 #sys.stdout = io.TextIOWrapper(sys.stdout.detach(), encoding = 'utf-8')
-#sys.stderr = io.TextIOWrapper(sys.stderr.detach(), encoding = 'utf-8')
+sys.stderr = io.TextIOWrapper(sys.stderr.detach(), encoding = 'utf-8')
 
 class Unbuffered(object):
    def __init__(self, stream):
@@ -70,9 +70,14 @@ class Emperor(telepot.aio.helper.ChatHandler, Global):
         
         if chat.find('/누구 ')==0:
             await jjs.wow(bot,letter)
-        return 'okay'
-        
-            
+
+
+        if chat.find('!') == 0 :
+            await self.sender.sendMessage('okay')
+            a,b=await ytube2.ysrch(letter)
+            await self.sender.sendMessage(a,reply_markup=b)
+            print(a)
+            print(b)
          
 
 class Slave(telepot.aio.helper.CallbackQueryOriginHandler, Global):
@@ -107,6 +112,11 @@ class Slave(telepot.aio.helper.CallbackQueryOriginHandler, Global):
             dd = studylog.stamp('d')
             tempmsg = letter['name']+'의'+do+' 기록 시작!'
             await self.editor.editMessageText(tempmsg,reply_markup=mk)
+        if q[0] == 'ytdw'
+            if q[1] == 'a'
+            elif q[1] =='b'
+            
+            
         print(q)
 
 
