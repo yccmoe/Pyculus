@@ -84,8 +84,8 @@ class Emperor(telepot.aio.helper.ChatHandler, Global):
             await self.sender.sendMessage(minn, reply_markup=keyboard)
         if chid == ph or chid == mew:
             if chat == 'ㅎㅇ' : await self.sender.sendMessage(remote.greeting(),reply_markup=remote.butten())
-		if chid == mew:
-            if chat == '불' : await self.sender.sendMessage(remote.greeting(),reply_markup=remote.privhomebttn())
+		if chid == mew and chat == '불' : 
+			await self.sender.sendMessage(remote.greeting(),reply_markup=remote.privhomebttn())
         if chat.count('춥나?')==1 or chat.count('덥나?')==1:
             await weather.wttr(bot,letter)
         if chat.find('/누구 ')==0:
