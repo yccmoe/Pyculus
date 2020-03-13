@@ -53,7 +53,7 @@ def privhomebttn():
     keyboard=InlineKeyboardMarkup(inline_keyboard=res)
     return keyboard    
     
-def privhomedesc(name,q,key)
+def privhomedesc(name,q,key):
     url=[]
     if q=='tgg'
         url.append('https://maker.ifttt.com/trigger/desk_bulb_tgg/with/key/')
