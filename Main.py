@@ -74,7 +74,7 @@ class Emperor(telepot.aio.helper.ChatHandler, Global):
             a,b=await board.bbs(letter,bbskey)
             await self.sender.sendMessage(a,reply_markup=b)
         ## $, >, =, /주사위, /15, 고독한공부방이라던가,,,,,,
-        if chat == '뭐먹지?' or chat == '모먹지?':
+        if chat == '####뭐먹지?' or chat == '####모먹지?':
             Global.Timeout= None
             sent = await self.sender.sendMessage('배가 고픈 분위기군요..', reply_markup=menupann.start())
             await self.edittext(sent, 5, '배가 고픈 분위기군요..')
@@ -84,6 +84,8 @@ class Emperor(telepot.aio.helper.ChatHandler, Global):
             await self.sender.sendMessage(minn, reply_markup=keyboard)
         if chid == ph or chid == mew:
             if chat == 'ㅎㅇ' : await self.sender.sendMessage(remote.greeting(),reply_markup=remote.butten())
+		if chid == mew:
+            if chat == '불' : await self.sender.sendMessage(remote.greeting(),reply_markup=remote.privhomebttn())
         if chat.count('춥나?')==1 or chat.count('덥나?')==1:
             await weather.wttr(bot,letter)
         if chat.find('/누구 ')==0:
@@ -158,6 +160,11 @@ class Slave(telepot.aio.helper.CallbackQueryOriginHandler, Global):
             else: mk = remote.butten()
             o=letter['orgn']
             o=o+'\n'+remote.press(letter['name'],q[1],iftttkey)
+            await self.editor.editMessageText(o,reply_markup=mk)
+		if q[0]=='premote':
+			mk = remote.privhomebttn()
+            o=letter['orgn']
+            o=o+'\n'+remote.privhomedesc(letter['name'],q[1],iftttkey)
             await self.editor.editMessageText(o,reply_markup=mk)
 
         print(q)
