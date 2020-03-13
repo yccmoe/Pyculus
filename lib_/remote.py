@@ -51,26 +51,26 @@ def privhomebttn():
         [{'text':'블루', 'callback_data': 'premote♡bl'}]
     ]
     keyboard=InlineKeyboardMarkup(inline_keyboard=res)
-    return keyboard	
-	
+    return keyboard    
+    
 def privhomedesc(name,q,key)
-	url=[]
-	if q=='tgg'
-		url.append('https://maker.ifttt.com/trigger/desk_bulb_tgg/with/key/')
+    url=[]
+    if q=='tgg'
+        url.append('https://maker.ifttt.com/trigger/desk_bulb_tgg/with/key/')
         m = '책상전구 토글할게요'
-	if q=='wh'
-		url.append('https://maker.ifttt.com/trigger/desk_bulb_wh/with/key/')
+    if q=='wh'
+        url.append('https://maker.ifttt.com/trigger/desk_bulb_wh/with/key/')
         m = '책상전구 스탠드조명으로'
-	if q=='ph'
-		url.append('https://maker.ifttt.com/trigger/desk_bulb_ph/with/key/')
+    if q=='ph'
+        url.append('https://maker.ifttt.com/trigger/desk_bulb_ph/with/key/')
         m = '책상전구 게임조명으로'
-	if q=='bl'
-		url.append('https://maker.ifttt.com/trigger/desk_bulb_bl/with/key/')
+    if q=='bl'
+        url.append('https://maker.ifttt.com/trigger/desk_bulb_bl/with/key/')
         m = '책상전구 파란조명으로'
     for i in range(len(url)):
         urllib.request.urlopen(url[i]+key)
 
-		
+        
 def press(name,q,key):
     url=[]
     if q=='lb':

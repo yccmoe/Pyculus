@@ -161,8 +161,8 @@ class Slave(telepot.aio.helper.CallbackQueryOriginHandler, Global):
             o=letter['orgn']
             o=o+'\n'+remote.press(letter['name'],q[1],iftttkey)
             await self.editor.editMessageText(o,reply_markup=mk)
-		if q[0]=='premote':
-			mk = remote.privhomebttn()
+        if q[0]=='premote':
+            mk = remote.privhomebttn()
             o=letter['orgn']
             o=o+'\n'+remote.privhomedesc(letter['name'],q[1],iftttkey)
             await self.editor.editMessageText(o,reply_markup=mk)
