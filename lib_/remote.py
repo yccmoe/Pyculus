@@ -69,6 +69,7 @@ def privhomedesc(name,q,key):
         m = '책상전구 파란조명으로'
     for i in range(len(url)):
         urllib.request.urlopen(url[i]+key)
+	return m
 
         
 def press(name,q,key):
