@@ -105,16 +105,16 @@ async def quest(letter, key):
 
 #async def timee(letter,key):
 def timee(letter):
-    #name, chid, chat = letter['name'],letter['chid'],letter['chat']
-    #hst, usr, pss, dbb  = key['host'], key['user'], key['pass'], key['db']
-    #conn = pymysql.connect(host=hst, user=usr, password=pss, db=dbb, charset='utf8' )
+    name, chid, chat = letter['name'],letter['chid'],letter['chat']
+    hst, usr, pss, dbb  = key['host'], key['user'], key['pass'], key['db']
+    conn = pymysql.connect(host=hst, user=usr, password=pss, db=dbb, charset='utf8' )
     chat=letter
     print(paser(chat))
     if paser(chat)=='Error':
         print('not okay')
         return
     if paser(chat)=='END':
-        print('bye bye')
+#        await bot.sendMessage(chid, '- - - some text - - -')
         return
     try:
         with conn.cursor() as cursor:
@@ -122,6 +122,7 @@ def timee(letter):
             cursor.execute(sql,(stamp(e),22,22,chid,name,paser(chat),stamp(d),stamp(w),stamp(m),stamp(y)))
             conn.commit()
         conn.close()
+        await bot.sendMessage(chid, name+'의 '+paser(chat)+' 기록 시작!')
         return 'okay'
     except:
 #        print('INSERT INTO timee (stime,etime,dtime,chid,name,cat,dstamp,wstamp,mstamp,ystamp) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)')
@@ -143,6 +144,7 @@ async def semaii(letter, key):
             
             
         conn.close()
+        
         return 'okay'
     except:
         return 'fail'
