@@ -40,6 +40,7 @@ def paser(text):
     elif text.count('행법')>=1 :return '행법'
     elif text.count('코딩')>=1 :return '코딩'
     elif text.count('운동')>=1 :return '운동'
+    elif text.count('게임')>=1 :return '게임'
     elif text.count('수업')>=1 :return '수업'
     elif text.count('휴식')>=1 :return '휴식'
     elif text.count('핫산')>=1 :return '핫산'
@@ -144,7 +145,7 @@ async def semaii(bot,letter, key):
             
             
         conn.close()
-        
+#        await bot.sendMessage(chid, name+'의 '+paser(chat)+' 기록 시작!')
         return 'okay'
     except:
         return 'fail'
