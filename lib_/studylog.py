@@ -148,7 +148,7 @@ async def semaii(bot,letter, key):
         await bot.sendMessage(chid, name+'의 '+rows[0][6]+' '+timecelc(rows[0][3]))
     conn.close()
 
-    return 'okay'
+    #return 'okay'
     #except:
     #    return 'fail'
         
