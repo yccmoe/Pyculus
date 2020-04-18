@@ -142,10 +142,12 @@ async def semaii(bot,letter, key):
             sql='update timee set dtime=etime-stime where name=%s and chid=%s and dtime=22;'
             cursor.execute(sql,(name,chid))
             conn.commit()
-            
-            
+            sql="select * from timee where name=%s and chid=%s DESC limit 1;"
+            cursor.execute(sql,(name,chid))
+            rows = curs.fetchall()
+            await bot.sendMessage(chid, rows)
         conn.close()
-#        await bot.sendMessage(chid, name+'의 '+paser(chat)+' 기록 시작!')
+
         return 'okay'
     except:
         return 'fail'
