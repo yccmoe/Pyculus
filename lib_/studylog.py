@@ -20,7 +20,7 @@ message_with_inline_keyboard = None
 
 if __name__ == '__main__':
     print('이 모듈을 직접 실행하셨군요.')
-    import datetime
+    
 
 def paser(text):
     if text.find('!')!=0:  
