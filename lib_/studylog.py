@@ -104,7 +104,7 @@ async def quest(letter, key):
         return '일퀘 추가 실패함!'
 
 #async def timee(letter,key):
-def timee(letter):
+async def timee(letter,key):
     name, chid, chat = letter['name'],letter['chid'],letter['chat']
     hst, usr, pss, dbb  = key['host'], key['user'], key['pass'], key['db']
     conn = pymysql.connect(host=hst, user=usr, password=pss, db=dbb, charset='utf8' )
