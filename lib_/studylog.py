@@ -119,7 +119,7 @@ async def timee(letter,key):
     #try:
     with conn.cursor() as cursor:
         sql = 'INSERT INTO timee (stime,etime,dtime,chid,name,cat,dstamp,wstamp,mstamp,ystamp) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'
-        cursor.execute(sql,(stamp(e),22,22,chid,name,paser(chat),stamp(d),stamp(w),stamp(m),stamp(y)))
+        cursor.execute(sql,(stamp('e'),22,22,chid,name,paser(chat),stamp('d'),stamp('w'),stamp('m'),stamp('y')))
         conn.commit()
     conn.close()
     await bot.sendMessage(chid, name+'의 '+paser(chat)+' 기록 시작!')
@@ -136,7 +136,7 @@ async def semaii(letter, key):
     try:
         with conn.cursor() as cursor:
             sql='update timee set etime =%s where name=%s and chid=%s and etime=22;'
-            cursor.execute(sql,(stamp(e),name,chid))
+            cursor.execute(sql,(stamp('e'),name,chid))
             conn.commit()
             sql='update timee set dtime=etime-stime where name=%s and chid=%s and dtime=22;'
             cursor.execute(sql,(name,chid))
