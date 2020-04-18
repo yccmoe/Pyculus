@@ -104,7 +104,7 @@ async def quest(letter, key):
         return '일퀘 추가 실패함!'
 
 #async def timee(letter,key):
-async def timee(letter,key):
+async def timee(bot,letter,key):
     name, chid, chat = letter['name'],letter['chid'],letter['chat']
     hst, usr, pss, dbb  = key['host'], key['user'], key['pass'], key['db']
     conn = pymysql.connect(host=hst, user=usr, password=pss, db=dbb, charset='utf8' )
@@ -129,7 +129,7 @@ async def timee(letter,key):
 #        print(stamp('e'),'22','22','chid','name',paser(chat),stamp('d'),stamp('w'),stamp('m'),stamp('y'))
     #    return 'fail'
         
-async def semaii(letter, key):
+async def semaii(bot,letter, key):
     name, chid, chat = letter['name'],letter['chid'],letter['chat']
     hst, usr, pss, dbb  = key['host'], key['user'], key['pass'], key['db']
     conn = pymysql.connect(host=hst, user=usr, password=pss, db=dbb, charset='utf8' )
