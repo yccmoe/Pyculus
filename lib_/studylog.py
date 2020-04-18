@@ -150,4 +150,4 @@ async def semaii(letter, key):
         return 'fail'
         
         
-timee('시마이')
+#timee('시마이')
