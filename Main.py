@@ -18,7 +18,7 @@ import time
 import datetime
 
 from lib_ import key_
-from lib_ import magic, menupann, core, board, remote, weather, jjs, ytube
+from lib_ import magic, menupann, core, board, remote, weather, jjs, ytube,studylog
 
 brain=''
 sys.stdout = io.TextIOWrapper(sys.stdout.detach(), encoding = 'utf-8')
@@ -65,7 +65,7 @@ class Emperor(telepot.aio.helper.ChatHandler, Global):
         if chat == '/ㅎㅇ': await self.sender.sendMessage(name+'님 '+magic.ping())
         if chat == '/채팅방': await self.sender.sendMessage(chid)
         if chat == '/주사위':await core.dice(bot, letter)
-        if chat.find('!') == 0 : await ytube.down(bot,letter)
+        #if chat.find('!') == 0 : await ytube.down(bot,letter)
         if chat =='/15': await self.sender.sendMessage(await core.fif_gui(), reply_markup = InlineKeyboardMarkup(inline_keyboard=[[dict(text='불만 있어요?', callback_data='fif_gui')],]))
         ##if chat.count('ㅋ')>5: await self.sender.sendMessage(core.funnybell(bot,letter))
         if chat.find('=') == 0 : await self.sender.sendMessage(await core.celc(chat, UAkey), parse_mode='HTML')
@@ -86,6 +86,8 @@ class Emperor(telepot.aio.helper.ChatHandler, Global):
             if chat == 'ㅎㅇ' : await self.sender.sendMessage(remote.greeting(),reply_markup=remote.butten())
         if chid == mew and chat == '불' :
             await self.sender.sendMessage(remote.greeting(),reply_markup=remote.privhomebttn())
+        if chid == mew and chat.find('!')=0 :
+            
         if chat.count('춥나?')==1 or chat.count('덥나?')==1:
             await weather.wttr(bot,letter)
         if chat.find('/누구 ')==0:
@@ -177,10 +179,12 @@ naver = key_.kids('naver')
 phgs = key_.kids('phgs')
 bbskey = key_.kids('bbs')
 iftttkey=key_.kids('ifttt')
+stdkey = key_.kids('std')
 
 me=key_.adds ('me')
 mew=key_.adds ('mew')
 ph=key_.adds ('pharmacy')
+study=key.adds('study')
 
 
 

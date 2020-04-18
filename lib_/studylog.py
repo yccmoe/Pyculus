@@ -11,8 +11,8 @@ import urllib.request
 import sys
 import io
 from telepot.namedtuple import InlineKeyboardMarkup, InlineKeyboardButton
-sys.stdout = io.TextIOWrapper(sys.stdout.detach(), encoding = 'utf-8')
-sys.stderr = io.TextIOWrapper(sys.stderr.detach(), encoding = 'utf-8')
+#sys.stdout = io.TextIOWrapper(sys.stdout.detach(), encoding = 'utf-8')
+#sys.stderr = io.TextIOWrapper(sys.stderr.detach(), encoding = 'utf-8')
 
 
 message_with_inline_keyboard = None
@@ -22,7 +22,10 @@ if __name__ == '__main__':
     print('이 모듈을 직접 실행하셨군요.')
     import datetime
 
-def sbj_dict(text):
+def paser(text):
+    if text.find('!')!=0:  
+        return 'Error'
+    text = text.replace('!','')
     if text.count('국어')>=1 :return '국어'
     elif text.count('영어')>=1 :return '영어'
     elif text.count('국사')>=1 :return '국사'
@@ -40,6 +43,11 @@ def sbj_dict(text):
     elif text.count('수업')>=1 :return '수업'
     elif text.count('휴식')>=1 :return '휴식'
     elif text.count('핫산')>=1 :return '핫산'
+    elif text.count('시마이')>=1 :return 'END'
+    elif text.count('끝')>=1 :return 'END'
+    elif text.count('완')>=1 :return 'END'
+    elif text.count('그만')>=1 :return 'END'
+    elif text.count('접')>=1 :return 'END'
     else:return '기타'
     
 def stamp(q):
@@ -50,15 +58,17 @@ def stamp(q):
     if q=='y' or q=='year': return int(str(n.strftime('%Y')))
     if q=='e' or q=='epoch': return n.timestamp()
     
-print(stamp('d'))
-print(stamp('w'))
-print(stamp('m'))
-print(stamp('y'))
-print(stamp('e'))
+#print(stamp('d'))
+#print(stamp('w'))
+#print(stamp('m'))
+#print(stamp('y'))
+#print(stamp('e'))
 
 def subject(letter):
     s_list=('국어','영어','국사','회계','세법','행법','행학','핫산','코딩','게임','운동','휴식')
     t = letter['chat']
+    if t.find('!')!=0:  
+        return 'no'
     t = t.replace('!','')
     if t in s_list: return t
     else: return 'no'
@@ -67,14 +77,6 @@ def subject(letter):
 ## etime = 지금
 ## XX N탐!
 ## YY 기록시작!!
-async def log(letter,key):
-    s_list=('국어','영어','국사','회계','세법','행법','행학','핫산','코딩','게임','운동','휴식')
-    conn = pymysql.connect(host=hst, user=usr, password=pss, db=dbb, charset='utf8' )
-    t = letter['chat']
-    t = t.replace('!','')
-    if t in s_list: 
-    else: return 'no'
-    
 def timecelc(val):
     if val >= 3600:
         res = str(round((val/3600),1)) +'탐'
@@ -90,7 +92,7 @@ async def quest(letter, key):
     name, chid, chat = letter['name'],letter['chid'],letter['chat']
     memo = chat.replace('+','')
     hst, usr, pss, dbb  = key['host'], key['user'], key['pass'], key['db']
-    conn = pymysql.connect(host=hst, user=usr, password=pss, db=dbb, charset='utf8' 
+    conn = pymysql.connect(host=hst, user=usr, password=pss, db=dbb, charset='utf8' )
     try:
         with conn.cursor() as cursor:
             sql = 'INSERT INTO quest (day, chid, name, memo) VALUES (%s, %s, %s, %s)'
@@ -101,31 +103,35 @@ async def quest(letter, key):
     except:
         return '일퀘 추가 실패함!'
 
-async def passer(input):
-    s_list=('국어','영어','국사','회계','세법','행법','행학','핫산','코딩','게임','운동','휴식')
-    for i in range(len(s_list)):
-        if text.count(s_list[i])>0:
-            return s_list[i]
-        else:
-            pass
-
-async def timee(letter,key):
-    name, chid, chat = letter['name'],letter['chid'],letter['chat']
-    hst, usr, pss, dbb  = key['host'], key['user'], key['pass'], key['db']
-    conn = pymysql.connect(host=hst, user=usr, password=pss, db=dbb, charset='utf8' 
+#async def timee(letter,key):
+def timee(letter):
+    #name, chid, chat = letter['name'],letter['chid'],letter['chat']
+    #hst, usr, pss, dbb  = key['host'], key['user'], key['pass'], key['db']
+    #conn = pymysql.connect(host=hst, user=usr, password=pss, db=dbb, charset='utf8' )
+    chat=letter
+    print(paser(chat))
+    if paser(chat)=='Error':
+        print('not okay')
+        return
+    if paser(chat)=='END':
+        print('bye bye')
+        return
     try:
         with conn.cursor() as cursor:
             sql = 'INSERT INTO timee (stime,etime,dtime,chid,name,cat,dstamp,wstamp,mstamp,ystamp) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'
-            cursor.execute(sql,(stamp(e),22,22,chid,name,passer(chat),stamp(d),stamp(w),stamp(m),stamp(y)))
+            cursor.execute(sql,(stamp(e),22,22,chid,name,paser(chat),stamp(d),stamp(w),stamp(m),stamp(y)))
             conn.commit()
         conn.close()
         return 'okay'
     except:
+#        print('INSERT INTO timee (stime,etime,dtime,chid,name,cat,dstamp,wstamp,mstamp,ystamp) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)')
+#        print(stamp('e'),'22','22','chid','name',paser(chat),stamp('d'),stamp('w'),stamp('m'),stamp('y'))
         return 'fail'
+        
 async def semaii(letter, key):
     name, chid, chat = letter['name'],letter['chid'],letter['chat']
     hst, usr, pss, dbb  = key['host'], key['user'], key['pass'], key['db']
-    conn = pymysql.connect(host=hst, user=usr, password=pss, db=dbb, charset='utf8' 
+    conn = pymysql.connect(host=hst, user=usr, password=pss, db=dbb, charset='utf8' )
     try:
         with conn.cursor() as cursor:
             sql='update timee set etime =%s where name=%s and chid=%s and etime=22;'
@@ -134,9 +140,12 @@ async def semaii(letter, key):
             sql='update timee set dtime=etime-stime where name=%s and chid=%s and dtime=22;'
             cursor.execute(sql,(name,chid))
             conn.commit()
-            sql=
+            
             
         conn.close()
         return 'okay'
     except:
         return 'fail'
+        
+        
+timee('시마이')
