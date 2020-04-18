@@ -134,23 +134,23 @@ async def semaii(bot,letter, key):
     name, chid, chat = letter['name'],letter['chid'],letter['chat']
     hst, usr, pss, dbb  = key['host'], key['user'], key['pass'], key['db']
     conn = pymysql.connect(host=hst, user=usr, password=pss, db=dbb, charset='utf8' )
-    try:
-        with conn.cursor() as cursor:
-            sql='update timee set etime =%s where name=%s and chid=%s and etime=22;'
-            cursor.execute(sql,(stamp('e'),name,chid))
-            conn.commit()
-            sql='update timee set dtime=etime-stime where name=%s and chid=%s and dtime=22;'
-            cursor.execute(sql,(name,chid))
-            conn.commit()
-            sql="select * from timee where name=%s and chid=%s DESC limit 1;"
-            cursor.execute(sql,(name,chid))
-            rows = curs.fetchall()
-            await bot.sendMessage(chid, name+'의 '+rows[0][6]+' '+timecelc(rows[0][3]))
-        conn.close()
+    #try:
+    with conn.cursor() as cursor:
+        sql='update timee set etime =%s where name=%s and chid=%s and etime=22;'
+        cursor.execute(sql,(stamp('e'),name,chid))
+        conn.commit()
+        sql='update timee set dtime=etime-stime where name=%s and chid=%s and dtime=22;'
+        cursor.execute(sql,(name,chid))
+        conn.commit()
+        sql="select * from timee where name=%s and chid=%s DESC limit 1;"
+        cursor.execute(sql,(name,chid))
+        rows = curs.fetchall()
+        await bot.sendMessage(chid, name+'의 '+rows[0][6]+' '+timecelc(rows[0][3]))
+    conn.close()
 
         return 'okay'
-    except:
-        return 'fail'
+    #except:
+    #    return 'fail'
         
         
 #timee('시마이')
