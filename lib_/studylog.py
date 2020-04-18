@@ -80,9 +80,9 @@ def subject(letter):
 ## YY 기록시작!!
 def timecelc(val):
     if val >= 3600:
-        res = str(round((val/3600),1)) +'탐'
+        res = str(round((val/3600),1)) +'탐!!'
     elif val >=300:
-        res = str(round((val/60),0))+'분'
+        res = str(round((val/60),0))+'분!'
     else :
         res = '5분 미만  부스러기'
     res = res.replace ('.0','')
@@ -145,7 +145,7 @@ async def semaii(bot,letter, key):
             sql="select * from timee where name=%s and chid=%s DESC limit 1;"
             cursor.execute(sql,(name,chid))
             rows = curs.fetchall()
-            await bot.sendMessage(chid, rows)
+            await bot.sendMessage(chid, name+'의 '+rows[0][6]+' '+timecelc(rows[0][3]))
         conn.close()
 
         return 'okay'
