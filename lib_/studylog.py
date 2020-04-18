@@ -144,7 +144,7 @@ async def semaii(bot,letter, key):
         conn.commit()
         sql="select * from timee where name=%s and chid=%s order by _No DESC limit 1;"
         cursor.execute(sql,(name,chid))
-        rows = curs.fetchall()
+        rows = cursor.fetchall()
         await bot.sendMessage(chid, name+'의 '+rows[0][6]+' '+timecelc(rows[0][3]))
     conn.close()
 
