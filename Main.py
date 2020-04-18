@@ -187,7 +187,7 @@ stdkey = key_.kids('std')
 me=key_.adds ('me')
 mew=key_.adds ('mew')
 ph=key_.adds ('pharmacy')
-study=key.adds('study')
+study=key_.adds('study')
 
 
 
