@@ -108,7 +108,7 @@ async def timee(letter,key):
     name, chid, chat = letter['name'],letter['chid'],letter['chat']
     hst, usr, pss, dbb  = key['host'], key['user'], key['pass'], key['db']
     conn = pymysql.connect(host=hst, user=usr, password=pss, db=dbb, charset='utf8' )
-    chat=letter
+    
     print(paser(chat))
     if paser(chat)=='Error':
         print('not okay')
