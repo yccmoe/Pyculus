@@ -78,9 +78,10 @@ def Report(req):
                 time.sleep(10)
     conn.close()
 def doom():
+    conn = pymysql.connect(host=key['host'],user=key['user'],password=key['pass'],db=key['db'],charset='utf8')
     with conn.cursor() as cursor:
         sql='update timee set etime =%s where etime=22;'
-        cursor.execute(sql,(stamp('e'))
+        cursor.execute(sql,stamp('e'))
         conn.commit()
         sql='update timee set dtime=etime-stime where dtime=22;'
         cursor.execute(sql)
