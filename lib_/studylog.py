@@ -41,6 +41,9 @@ def paser(text):
     elif text.count('코딩')>=1 :return '코딩'
     elif text.count('운동')>=1 :return '운동'
     elif text.count('게임')>=1 :return '게임'
+    elif text.count('와우')>=1 :return '게임'
+    elif text.count('껨')>=1 :return '게임'
+    elif text.count('피씨방')>=1 :return '게임'
     elif text.count('수업')>=1 :return '수업'
     elif text.count('휴식')>=1 :return '휴식'
     elif text.count('핫산')>=1 :return '핫산'
@@ -49,6 +52,8 @@ def paser(text):
     elif text.count('완')>=1 :return 'END'
     elif text.count('그만')>=1 :return 'END'
     elif text.count('접')>=1 :return 'END'
+    elif text.count('딸')>=1 :return '자위'
+    elif text.count('야동')>=1 :return '자위'
     else:return '기타'
     
 def stamp(q):
