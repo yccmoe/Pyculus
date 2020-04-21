@@ -58,12 +58,6 @@ def stamp(q):
     if q=='m' or q=='month': return int(str(n.strftime('%Y'))+str(n.strftime('%m')))
     if q=='y' or q=='year': return int(str(n.strftime('%Y')))
     if q=='e' or q=='epoch': return n.timestamp()
-    
-#print(stamp('d'))
-#print(stamp('w'))
-#print(stamp('m'))
-#print(stamp('y'))
-#print(stamp('e'))
 
 def subject(letter):
     s_list=('국어','영어','국사','회계','세법','행법','행학','핫산','코딩','게임','운동','휴식')
@@ -104,20 +98,14 @@ async def quest(letter, key):
     except:
         return '일퀘 추가 실패함!'
 
-#async def timee(letter,key):
 async def timee(bot,letter,key):
     name, chid, chat = letter['name'],letter['chid'],letter['chat']
     hst, usr, pss, dbb  = key['host'], key['user'], key['pass'], key['db']
     conn = pymysql.connect(host=hst, user=usr, password=pss, db=dbb, charset='utf8' )
-    
-    print(paser(chat))
     if paser(chat)=='Error':
-        print('not okay')
         return
     if paser(chat)=='END':
-#        await bot.sendMessage(chid, '- - - some text - - -')
         return
-    #try:
     with conn.cursor() as cursor:
         sql = 'INSERT INTO timee (stime,etime,dtime,chid,name,cat,dstamp,wstamp,mstamp,ystamp) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'
         cursor.execute(sql,(stamp('e'),22,22,chid,name,paser(chat),stamp('d'),stamp('w'),stamp('m'),stamp('y')))
@@ -125,10 +113,6 @@ async def timee(bot,letter,key):
     conn.close()
     await bot.sendMessage(chid, name+'의 '+paser(chat)+' 기록 시작!')
     return 'okay'
-    #except:
-#        print('INSERT INTO timee (stime,etime,dtime,chid,name,cat,dstamp,wstamp,mstamp,ystamp) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)')
-#        print(stamp('e'),'22','22','chid','name',paser(chat),stamp('d'),stamp('w'),stamp('m'),stamp('y'))
-    #    return 'fail'
         
 async def semaii(bot,letter, key):
     name, chid, chat = letter['name'],letter['chid'],letter['chat']
@@ -136,21 +120,19 @@ async def semaii(bot,letter, key):
     conn = pymysql.connect(host=hst, user=usr, password=pss, db=dbb, charset='utf8' )
     #try:
     with conn.cursor() as cursor:
+        sql="select * from timee where name=%s and chid=%s and etime=22 order by _No DESC limit 1;"
+        cursor.execute(sql,(name,chid))
+        state = cursor.fetchall()
         sql='update timee set etime =%s where name=%s and chid=%s and etime=22;'
         cursor.execute(sql,(stamp('e'),name,chid))
         conn.commit()
         sql='update timee set dtime=etime-stime where name=%s and chid=%s and dtime=22;'
         cursor.execute(sql,(name,chid))
         conn.commit()
-        sql="select * from timee where name=%s and chid=%s order by _No DESC limit 1;"
-        cursor.execute(sql,(name,chid))
-        rows = cursor.fetchall()
-        await bot.sendMessage(chid, name+'의 '+rows[0][6]+' '+timecelc(rows[0][3]))
+        if state:
+            sql="select * from timee where name=%s and chid=%s order by _No DESC limit 1;"
+            cursor.execute(sql,(name,chid))
+            rows = cursor.fetchall()
+            await bot.sendMessage(chid, name+'의 '+rows[0][6]+' '+timecelc(rows[0][3]))
     conn.close()
-
-    #return 'okay'
-    #except:
-    #    return 'fail'
-        
-        
-#timee('시마이')
+    return 'okay'
