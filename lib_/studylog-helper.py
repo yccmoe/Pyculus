@@ -77,7 +77,16 @@ def Report(req):
                 bot.sendMessage(chat[0], '~ ~ '+name[0]+memo[req][1]+' ~ ~\n'+response)
                 time.sleep(10)
     conn.close()
-    
+def doom():
+    with conn.cursor() as cursor:
+        sql='update timee set etime =%s where etime=22;'
+        cursor.execute(sql,(stamp('e'))
+        conn.commit()
+        sql='update timee set dtime=etime-stime where dtime=22;'
+        cursor.execute(sql)
+        conn.commit()
+        
+    conn.close()    
 def cal():    
     if int(n.strftime('%m'))==12 and int(n.strftime('%m'))==lastday:
         req='y'
@@ -92,4 +101,5 @@ def cal():
         Report('d')
         
 print(wk[w])
+doom()
 cal()
