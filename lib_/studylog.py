@@ -54,6 +54,7 @@ def paser(text):
     elif text.count('접')>=1 :return 'END'
     elif text.count('딸')>=1 :return '자위'
     elif text.count('야동')>=1 :return '자위'
+    elif text.count('자위')>=1 :return '자위'
     else:return '기타'
     
 def stamp(q):
